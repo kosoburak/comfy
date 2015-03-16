@@ -1,7 +1,7 @@
 ---
 defaults: &defaults
   output:
-    output_dir: /output/comfy
+    output_dir: output/comfy
   logging:
     log_type: file
     log_file: /logging/comfy.log
@@ -12,3 +12,4 @@ production:
 
 development:
   <<: *defaults
+

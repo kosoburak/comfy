@@ -7,13 +7,14 @@ require 'fileutils'
 
 class ComfyTemplater
 
-  attr_reader :data 
+  attr_accessor :data 
 
   def initialize(options, log = Logger.new(STDOUT))
     
-    data = {}
+    @data = {}
     data[:size] = options.size
     data[:format] = options.format
+    data[:password] = ""
 
     @distros = options.distros
     @output = "#{Settings.output['output_dir']}/"
@@ -23,6 +24,8 @@ class ComfyTemplater
 
 
   def create_output
+
+    @log.debug("DISTROS: '#{@distros}'")
 
     @log.debug('Creating temporary files...')
     temp = Tempfile.new('temp')
@@ -34,16 +37,16 @@ class ComfyTemplater
       @output << "#{distribution}"
       @template = "#{File.dirname(__FILE__)}/templates/#{distribution}/#{distribution}.erb"
       @log.debug('Generating password...')
-      data[:password] = ComfyTemplater.pswd_generator
+      data[:password] = pswd_generator
       @log.debug('Writing to temporary file...')
       write_to_temp(temp, edit_template)
       cp_output(temp.path, @output)
       @log.debug('Cleaning temporary file...')
-      temp.truncate(temp, 0)
+      temp.truncate(0)
     end
 
   ensure
-    tmp.close(true)
+    temp.close(true)
   end
 
   def cp_output(temp, to)
@@ -55,17 +58,16 @@ class ComfyTemplater
 
   def write_to_temp(temp, data)
 
-    tmp.write(data)
-    tmp.flush
+    temp.write(data)
+    temp.flush
 
   end
 
   def pswd_generator
     
-    @log.debug('Generating a random password')
+    @log.debug('Generating a random password...')
     o = [('a'..'z'), ('A'..'Z')].map { |i| i.to_a }.flatten
-    password = (0...20).map { o[rand(o.length)] }.join
-    return @password
+    @password = (0...30).map { o[rand(o.length)] }.join
 
   end
 

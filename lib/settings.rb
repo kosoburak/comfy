@@ -5,4 +5,6 @@ class Settings < Settingslogic
 
   source "#{File.dirname(__FILE__)}/../config/#{CONFIGURATION}"
 
+  namespace ENV['RAILS_ENV'] ? ENV['RAILS_ENV'] : 'production'
+
 end
