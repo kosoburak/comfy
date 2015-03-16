@@ -1,4 +1,4 @@
-require 'comfy_templator'
+require 'comfy_templater'
 require 'settings'
 
 class ComfyCreator

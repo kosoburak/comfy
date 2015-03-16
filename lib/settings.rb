@@ -1,7 +1,7 @@
 require 'settingslogic'
 
-class Settings
-  CONFIGURATION = 'confy.yml'
+class Settings < Settingslogic
+  CONFIGURATION = 'conf.yml'
 
   source "#{File.dirname(__FILE__)}/#{CONFIGURATION}"
 
