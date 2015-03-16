@@ -1,0 +1,37 @@
+{ 
+    "builders":
+    [
+        {
+            "name": "debian",
+            "type": "qemu",
+            "iso_url": "http://cdimage.debian.org/debian-cd/7.6.0/amd64/iso-cd/debian-7.6.0-amd64-netinst.iso",
+            "iso_checksum": "12301855952ce5fdc3319ed0c172f352c5223f49",
+            "iso_checksum_type": "sha1",
+            "output_directory": "debian_7.6_velkost",
+            "ssh_wait_timeout": "60m",
+            "shutdown_command": "shutdown -h now",
+            "format": "<%= @format %>",
+            "disk_size": <%= @size %>,
+            "headless": false,
+            "accelerator": "kvm",
+            "ssh_username": "root",
+            "ssh_password": "<%= @password %>",
+            "vm_name": "debian",
+            "boot_command": 
+              [
+              "<esc>",
+              " install auto=true priority=critical preseed/url=<%= @url %>/preseed.cfg",
+              "<enter>"
+              ]
+        }
+    ],
+
+    "provisioners":
+    [
+      {
+        "type": "shell",
+        "script": "cloud_script.sh"
+      }
+    ]
+
+}

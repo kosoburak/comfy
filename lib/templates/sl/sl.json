@@ -1,0 +1,36 @@
+{ 
+    "builders":
+    [
+	{
+            "name": "sl",
+            "type": "qemu",
+            "iso_url": "http://mirror.karneval.cz/pub/linux/scientific/6.5/x86_64/iso/SL-65-x86_64-2013-12-05-boot.iso",
+            "iso_checksum": "2c56df9b6a6cce14fae802de0bb4a675b5bdc69d",
+            "iso_checksum_type": "sha1",
+            "output_directory": "sl_6.5",
+            "ssh_wait_timeout": "120m",
+            "shutdown_command": "shutdown -h now",
+            "disk_size": 5000,
+            "headless": false,
+            "accelerator": "kvm",
+            "ssh_username": "root",
+            "ssh_password": "PASSWORDTMP",
+            "vm_name": "sl",
+            "boot_command": 
+              [
+              "<esc>",
+              " linux dd ks=http://147.251.48.1/~xkosaris/cesnet/scientific/kickstart.cfg",
+              "<enter>"
+              ]
+        }
+    ],
+
+    "provisioners":
+    [
+      {
+        "type": "shell",
+        "script": "cloud_script.sh"
+      }
+    ]
+
+}

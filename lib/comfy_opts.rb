@@ -19,14 +19,16 @@ class ComfyOpts
   SIZE_DEFAULT = 5000
   DISTROS_DEFAULT = ["centos", "debian", "sl", "ubuntu"]
 
-  CENTOS_TEMPLATE = 'lib/templates/centos/centos.erb'
-  CENTOS_INSTAL = 'lib/templates/centos/kickstart.cfg'
-  DEBIAN_TEMPLATE = 'lib/templates/debian/debian.erb'
-  DEBIAN_INSTAL = 'lib/templates/debian/preseed.cfg'
-  SL_TEMPLATE = 'lib/templates/sl/sl.erb'
-  SL_INSTAL = 'lib/templates/sl/kickstart.cfg'
-  UBUNTU_TEMPLATE = 'lib/templates/ubuntu/ubuntu.erb'
-  UBUNTU_INSTAL = 'lib/templates/ubuntu/preseed.cfg'
+  DIR = "#{File.dirname(__FILE__)}/"
+
+  CENTOS_TEMPLATE = DIR + 'templates/centos/centos.erb'
+  CENTOS_INSTAL = DIR + 'templates/centos/kickstart.cfg'
+  DEBIAN_TEMPLATE = DIR + 'templates/debian/debian.erb'
+  DEBIAN_INSTAL = DIR + 'templates/debian/preseed.cfg'
+  SL_TEMPLATE = DIR + 'templates/sl/sl.erb'
+  SL_INSTAL = DIR + 'templates/sl/kickstart.cfg'
+  UBUNTU_TEMPLATE = DIR + 'templates/ubuntu/ubuntu.erb'
+  UBUNTU_INSTAL = DIR + 'templates/ubuntu/preseed.cfg'
 
 # Return a structure with options
 
@@ -102,22 +104,22 @@ class ComfyOpts
     missing_files = ''
 
     #make sure date range make sense
-    if options.distros.include? 'c'
+    if options.distros.include? 'centos'
       if !File.file?(CENTOS_TEMPLATE) || !File.file?(CENTOS_INSTAL)
         missing_files << "Missing template or kickstart file for CentOS.\n"
       end
     end
-    if options.distros.include? 'd'
+    if options.distros.include? 'debian'
       if !File.file?(DEBIAN_TEMPLATE) || !File.file?(DEBIAN_INSTAL)
         missing_files << "Missing template of pressed file for Debian.\n"
       end
     end
-    if options.distros.include? 's'
+    if options.distros.include? 'sl'
       if !File.file?(SL_TEMPLATE) || !File.file?(SL_INSTAL)
         missing_files << "Missing template or kickstart file for SL.\n"
       end
     end
-    if options.distros.include? 'u'
+    if options.distros.include? 'ubuntu'
       if !File.file?(UBUNTU_TEMPLATE) || !File.file?(UBUNTU_INSTAL)
         missing_files << "Missing template or preseed file for Ubuntu.\n"
       end

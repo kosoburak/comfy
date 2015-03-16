@@ -32,7 +32,7 @@ class ComfyTemplater
     for distribution in @distros
       @log.debug("Creating files for distribution '#{distribution}'...")
       @output << "#{distribution}"
-      @template = "#{File.dirname(__FILE__)}/lib/templates/#{distribution}/#{distribution}.erb"
+      @template = "#{File.dirname(__FILE__)}/templates/#{distribution}/#{distribution}.erb"
       @log.debug('Generating password...')
       data[:password] = ComfyTemplater.pswd_generator
       @log.debug('Writing to temporary file...')

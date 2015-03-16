@@ -1,0 +1,37 @@
+{ 
+    "builders":
+    [
+	{
+            "name": "ubuntu",
+            "type": "qemu",
+            "iso_url": "http://archive.ubuntu.com/ubuntu/dists/trusty/main/installer-amd64/current/images/netboot/mini.iso",
+            "iso_checksum": "e1e074b4302898698977c08013e0afe5c06245e2",
+            "iso_checksum_type": "sha1",
+            "output_directory": "ubuntu_14.04",
+            "ssh_wait_timeout": "90m",
+            "shutdown_command": "shutdown -h now",
+            "format": "<%= @format %>"
+            "disk_size": <%=@size %>,
+            "headless": false,
+            "accelerator": "kvm",
+            "ssh_username": "cloud",
+            "ssh_password": "<%= @password %>",
+            "vm_name": "ubuntu",
+            "boot_command": 
+              [
+              "<esc>",
+              " install auto=true priority=critical preseed/url=<%= @url %>/preseed.cfg",
+              "<enter>"
+              ]
+        }
+    ],
+
+    "provisioners":
+    [
+      {
+        "type": "shell",
+        "script": "cloud_script.sh"
+      }
+    ]
+
+}
