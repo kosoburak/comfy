@@ -5,7 +5,7 @@ require 'erb'
 require 'fileutils'
 
 
-cass ComfyTemplater
+class ComfyTemplater
 
   attr_reader :data 
 
@@ -77,3 +77,5 @@ cass ComfyTemplater
     erb.result(binding)
 
   end
+
+end
