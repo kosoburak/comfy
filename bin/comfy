@@ -1,3 +1,32 @@
 #!/usr/bin/env ruby
 
-require 'comfy'
+ENV['RAILS_ENV'] = ENV['RAILS_ENV'] ? ENV['RAILS_ENV'] : 'production'
+
+require 'comfy_opts'
+require 'comfy_templater'
+require 'comfy_creator'
+require 'fileutils'
+require 'syslogger'
+require 'settings'
+
+#Command line options handling
+options = ComfyOpts.parse(ARGV)
+
+#Logger initialization
+log = Logger.new(STDOUT)
+
+#Create output dir
+begin
+  FileUtils.mkdir_p Settings.output['output_dir']
+rescue SystemCallError => e
+  puts "Problem creating output dirrectory: #{e.message}. Aborting."
+  exit
+end
+
+
+
+#run creator
+comfy_creator = ComfyCreator.new(options, log)
+comfy_creator.create
+
+
