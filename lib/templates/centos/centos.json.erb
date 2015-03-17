@@ -10,17 +10,17 @@
             "output_directory": "centOS_7.0",
             "ssh_wait_timeout": "130m",
             "shutdown_command": "shutdown -h now",
-            "format": "<%= @format %>",
-            "disk_size": <%= @size %>,
+            "format": "<%= @data[:format] %>",
+            "disk_size": <%= @data[:size] %>,
             "headless": false,
             "accelerator": "kvm",
             "ssh_username": "root",
-            "ssh_password": "<%= @password %>",
+            "ssh_password": "<%= @data[:password] %>",
             "vm_name": "centOS",
             "boot_command":
               [
               "<esc>",
-              " linux ks=<%= @url %>/kickstart.cfg",
+              " linux ks=<%= @data[:url] %>/kickstart.cfg",
               "<enter>"
               ]
         }
@@ -35,3 +35,5 @@
     ]
 
 }
+
+

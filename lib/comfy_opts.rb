@@ -17,29 +17,31 @@ end
 class ComfyOpts
   FORMAT_DEFAULT = 'qcow2'
   SIZE_DEFAULT = 5000
-  DISTROS_DEFAULT = ["centos", "debian", "sl", "ubuntu"]
 
-  DIR = "#{File.dirname(__FILE__)}/"
+  DIR = "#{File.dirname(__FILE__)}"
 
-  CENTOS_TEMPLATE = DIR + 'templates/centos/centos.erb'
-  CENTOS_INSTAL = DIR + 'templates/centos/kickstart.cfg'
-  DEBIAN_TEMPLATE = DIR + 'templates/debian/debian.erb'
-  DEBIAN_INSTAL = DIR + 'templates/debian/preseed.cfg'
-  SL_TEMPLATE = DIR + 'templates/sl/sl.erb'
-  SL_INSTAL = DIR + 'templates/sl/kickstart.cfg'
-  UBUNTU_TEMPLATE = DIR + 'templates/ubuntu/ubuntu.erb'
-  UBUNTU_INSTAL = DIR + 'templates/ubuntu/preseed.cfg'
+  DISTROS_DEFAULT = Dir.entries("#{DIR}/templates").select {|entry| File.directory? File.join("#{DIR}/templates",entry) and !(entry =='.' || entry == '..') }
+
+  CENTOS_TEMPLATE = DIR + '/templates/centos/centos.json.erb'
+  CENTOS_INSTAL = DIR + '/templates/centos/centos.cfg.erb'
+  DEBIAN_TEMPLATE = DIR + '/templates/debian/debian.erb'
+  DEBIAN_INSTAL = DIR + '/templates/debian/preseed.cfg'
+  SL_TEMPLATE = DIR + '/templates/sl/sl.erb'
+  SL_INSTAL = DIR + '/templates/sl/kickstart.cfg'
+  UBUNTU_TEMPLATE = DIR + '/templates/ubuntu/ubuntu.erb'
+  UBUNTU_INSTAL = DIR + '/templates/ubuntu/preseed.cfg'
 
 # Return a structure with options
 
   def self.parse(args)
+
     options = OpenStruct.new
 
     opt_parser = OptionParser.new do |opts|
       opts.banner = 'Usage of COMFY tool: comfy.rb [options]'
       opts.separator ''
 
-      opts.on('--distros centos,debian,sl,ubuntu', Array,
+      opts.on('--distros centos, debian, sl, ubuntu', Array,
               'List of distributions to create:',
               'centos',
               'debian',
@@ -134,9 +136,6 @@ class ComfyOpts
 
 end
 
-options = ComfyOpts.parse(ARGV)
-pp options
-pp ARGV
 
 
 __END__

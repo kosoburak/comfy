@@ -1,11 +1,13 @@
 require 'comfy_templater'
 require 'settings'
+require 'fileutils'
 
 class ComfyCreator
   
   def initialize(options, log)
     @options = options
     @log = log
+ #   delete_output_dir
   end
 
   def create
@@ -14,5 +16,8 @@ class ComfyCreator
     templater.create_output
 
   end
+
+#  def delete_output_dir
+#  end    
 
 end

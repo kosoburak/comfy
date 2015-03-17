@@ -3,6 +3,7 @@ require 'logger'
 require 'tempfile'
 require 'erb'
 require 'fileutils'
+require 'tmpdir'
 
 
 class ComfyTemplater
@@ -12,41 +13,55 @@ class ComfyTemplater
   def initialize(options, log = Logger.new(STDOUT))
     
     @data = {}
-    data[:size] = options.size
     data[:format] = options.format
+    data[:size] = options.size.to_s
     data[:password] = ""
 
     @distros = options.distros
-    @output = "#{Settings.output['output_dir']}/"
+
+    @temp_dir = Dir.mktmpdir() 
+    @output_json = "#{@temp_dir}/"
+    @output_cfg = "#{@temp_dir}/"
     @log = log
 
   end
 
 
   def create_output
-
+  
     @log.debug("DISTROS: '#{@distros}'")
+
+
+    @log.debug("TMPDIR:            '#{@temp_dir}'")
 
     @log.debug('Creating temporary files...')
     temp = Tempfile.new('temp')
-    #temp2 = Tempfile.new('temp2')
-    @log.debug("Temporary files '#{temp.path}' and were created.")
+    temp2 = Tempfile.new('temp2')
+    @log.debug("Temporary files '#{temp.path}' and '#{temp2.path}' were created.")
 
     for distribution in @distros
       @log.debug("Creating files for distribution '#{distribution}'...")
-      @output << "#{distribution}"
-      @template = "#{File.dirname(__FILE__)}/templates/#{distribution}/#{distribution}.erb"
+      @output_json << "#{distribution}.json"
+      @output_cfg << "#{distribution}.cfg"
+      @template_json = "#{File.dirname(__FILE__)}/templates/#{distribution}/#{distribution}.json.erb"
+      @template_cfg = "#{File.dirname(__FILE__)}/templates/#{distribution}/#{distribution}.cfg.erb"
+
       @log.debug('Generating password...')
       data[:password] = pswd_generator
-      @log.debug('Writing to temporary file...')
-      write_to_temp(temp, edit_template)
-      cp_output(temp.path, @output)
-      @log.debug('Cleaning temporary file...')
+
+      @log.debug('Writing to temporary files...')
+      write_to_temp(temp, edit_template(@template_json))
+      write_to_temp(temp2, edit_template(@template_cfg))
+      cp_output(temp.path, @output_json)
+      cp_output(temp.path, @output_cfg)
+      @log.debug('Cleaning temporary files...')
       temp.truncate(0)
+      temp2.truncate(0)
     end
 
   ensure
     temp.close(true)
+    temp2.close(true)
   end
 
   def cp_output(temp, to)
@@ -67,15 +82,15 @@ class ComfyTemplater
     
     @log.debug('Generating a random password...')
     o = [('a'..'z'), ('A'..'Z')].map { |i| i.to_a }.flatten
-    @password = (0...30).map { o[rand(o.length)] }.join
+    @password = (0...50).map { o[rand(o.length)] }.join
 
   end
 
-  def edit_template
+  def edit_template(template)
     
     @log.debug('Template editing')
-    erb = ERB.new(File.read(@template), nil, '-')
-    erb.filename = @template
+    erb = ERB.new(File.read(template), nil, '-')
+    erb.filename = template
     erb.result(binding)
 
   end
