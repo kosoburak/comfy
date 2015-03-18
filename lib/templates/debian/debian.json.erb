@@ -7,19 +7,20 @@
             "iso_url": "http://cdimage.debian.org/debian-cd/7.6.0/amd64/iso-cd/debian-7.6.0-amd64-netinst.iso",
             "iso_checksum": "12301855952ce5fdc3319ed0c172f352c5223f49",
             "iso_checksum_type": "sha1",
-            "output_directory": "debian_7.6_velkost",
+            "output_directory": "<%= @data[:output_dir] %>/debian_7.6_velkost",
             "ssh_wait_timeout": "60m",
             "shutdown_command": "shutdown -h now",
-            "disk_size": 5000,
+            "format": "<%= @data[:format] %>",
+            "disk_size": <%= @data[:size] %>,
             "headless": false,
             "accelerator": "kvm",
             "ssh_username": "root",
-            "ssh_password": "PASSWORDTMP",
+            "ssh_password": "<%= @data[:password] %>",
             "vm_name": "debian",
             "boot_command": 
               [
               "<esc>",
-              " install auto=true priority=critical preseed/url=http://147.251.48.1/~xkosaris/cesnet/debian/preseed.cfg",
+              " install auto=true priority=critical preseed/url=<%= @data[:url] %>/debian.cfg",
               "<enter>"
               ]
         }
@@ -29,7 +30,7 @@
     [
       {
         "type": "shell",
-        "script": "cloud_script.sh"
+        "script": "<%= @data[:scripts] %>/debian_cloud_script.sh"
       }
     ]
 

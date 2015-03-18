@@ -7,20 +7,20 @@
             "iso_url": "http://mirror.karneval.cz/pub/linux/scientific/6.5/x86_64/iso/SL-65-x86_64-2013-12-05-boot.iso",
             "iso_checksum": "2c56df9b6a6cce14fae802de0bb4a675b5bdc69d",
             "iso_checksum_type": "sha1",
-            "output_directory": "sl_6.5",
+            "output_directory": "<%= @data[:output_dir] %>/sl_6.5",
             "ssh_wait_timeout": "120m",
             "shutdown_command": "shutdown -h now",
-            "format": "<%= @format %>",
-            "disk_size": <%= @size%>,
+            "format": "<%= @data[:format] %>",
+            "disk_size": <%= @data[:size] %>,
             "headless": false,
             "accelerator": "kvm",
             "ssh_username": "root",
-            "ssh_password": "<%= @password %>",
+            "ssh_password": "<%= @data[:password] %>",
             "vm_name": "sl",
             "boot_command": 
               [
               "<esc>",
-              " linux dd ks=<%= @url %>/kickstart.cfg",
+              " linux dd ks=<%= @data[:url] %>/sl.cfg",
               "<enter>"
               ]
         }
@@ -30,7 +30,7 @@
     [
       {
         "type": "shell",
-        "script": "cloud_script.sh"
+        "script": "<%= @data[:scripts] %>/sl_cloud_script.sh"
       }
     ]
 

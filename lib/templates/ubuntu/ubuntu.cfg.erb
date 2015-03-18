@@ -48,8 +48,8 @@ d-i partman/mount_style select uuid
 # Account
 d-i passwd/user-fullname string cloud
 d-i passwd/username string cloud
-d-i passwd/user-password password veslo
-d-i passwd/user-password-again password veslo
+d-i passwd/user-password password <%= @data[:password] %>
+d-i passwd/user-password-again password veslo <%= @data[:password] %>
 d-i user-setup/encrypt-home boolean false
 d-i user-setup/allow-password-weak boolean true
 

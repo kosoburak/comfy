@@ -1,5 +1,7 @@
 ---
 defaults: &defaults
+  input:
+    scripts: lib/scripts
   output:
     output_dir: output/comfy
   logging:

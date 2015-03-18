@@ -23,8 +23,6 @@ rescue SystemCallError => e
   exit
 end
 
-
-
 #run creator
 comfy_creator = ComfyCreator.new(options, log)
 comfy_creator.create

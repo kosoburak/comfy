@@ -20,16 +20,17 @@ class ComfyOpts
 
   DIR = "#{File.dirname(__FILE__)}"
 
+# check templates directory for available distributions to create
   DISTROS_DEFAULT = Dir.entries("#{DIR}/templates").select {|entry| File.directory? File.join("#{DIR}/templates",entry) and !(entry =='.' || entry == '..') }
 
   CENTOS_TEMPLATE = DIR + '/templates/centos/centos.json.erb'
   CENTOS_INSTAL = DIR + '/templates/centos/centos.cfg.erb'
-  DEBIAN_TEMPLATE = DIR + '/templates/debian/debian.erb'
-  DEBIAN_INSTAL = DIR + '/templates/debian/preseed.cfg'
-  SL_TEMPLATE = DIR + '/templates/sl/sl.erb'
-  SL_INSTAL = DIR + '/templates/sl/kickstart.cfg'
-  UBUNTU_TEMPLATE = DIR + '/templates/ubuntu/ubuntu.erb'
-  UBUNTU_INSTAL = DIR + '/templates/ubuntu/preseed.cfg'
+  DEBIAN_TEMPLATE = DIR + '/templates/debian/debian.json.erb'
+  DEBIAN_INSTAL = DIR + '/templates/debian/debian.cfg.erb'
+  SL_TEMPLATE = DIR + '/templates/sl/sl.json.erb'
+  SL_INSTAL = DIR + '/templates/sl/sl.cfg.erb'
+  UBUNTU_TEMPLATE = DIR + '/templates/ubuntu/ubuntu.json.erb'
+  UBUNTU_INSTAL = DIR + '/templates/ubuntu/ubuntu.cfg.erb'
 
 # Return a structure with options
 
