@@ -1,7 +1,4 @@
 #!/usr/bin/env ruby
-
-ENV['RAILS_ENV'] = ENV['RAILS_ENV'] ? ENV['RAILS_ENV'] : 'production'
-
 require 'comfy_opts'
 require 'comfy_templater'
 require 'comfy_creator'
@@ -13,18 +10,45 @@ require 'settings'
 options = ComfyOpts.parse(ARGV)
 
 #Logger initialization
-log = Logger.new(STDOUT)
+logger = Logger.new(STDOUT)
+
+#initialize specific logger according to the configuration
+if Settings['logging'] && Settings['logging']['log_type'] == 'file'
+  begin
+    log_file = File.open(Settings['logging']['log_file'], File::WRONLY | File::CREAT | File::APPEND)
+    logger = Logger.new(log_file)
+  rescue => e
+    puts "Unable to create log file #{Settings['logging']['log_file']}: #{e.message}.\
+Falling back to STDOUT."
+  end
+elsif Settings['logging'] && Settings['logging']['log_type'] == 'syslog'
+  logger = Syslogger.new('comfy')
+end
+
+if Settings['logging'] && Settings.logging['log_level'] && Logger::Severity.const_defined?(Settings.logging['log_level'])
+  logger.level = Logger::Severity.const_get Settings.logging['log_level']
+else
+  logger.level = Logger::ERROR
+end
 
 #Create output dir
 begin
   FileUtils.mkdir_p Settings.output['output_dir']
 rescue SystemCallError => e
-  puts "Problem creating output dirrectory: #{e.message}. Aborting."
+  puts "Problem creating output directory: #{e.message}. Aborting."
   exit
 end
 
+opts = {}
+opts[:size] = options.size
+opts[:format] = options.format
+opts[:distros] = options.distros
+opts[:params] = options.params
+
+logger.debug("Starting Comfy with options: #{opts}.")
+
 #run creator
-comfy_creator = ComfyCreator.new(options, log)
-comfy_creator.create
+#comfy_creator = ComfyCreator.new(opts, logger)
+#comfy_creator.create
 
 

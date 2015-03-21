@@ -1,72 +1,59 @@
 require 'optparse'
-require 'optparse/time'
 require 'ostruct'
 require 'pp'
-
-# Just for compairing input distributions to create
-class Array
-  def contains_all? other
-    other = other.dup
-    each{|e| if i = other.index(e) then other.delete_at(i) end} 
-    other.empty?
-  end
-end
-
+require 'settings'
 
 # Class for parsing command line arguments
 class ComfyOpts
-  FORMAT_DEFAULT = 'qcow2'
+  FORMAT_DEFAULT = :qcow2
   SIZE_DEFAULT = 5000
 
-  DIR = "#{File.dirname(__FILE__)}"
+  DIR = "#{File.dirname(__FILE__)}/templates"
 
 # check templates directory for available distributions to create
-  DISTROS_DEFAULT = Dir.entries("#{DIR}/templates").select {|entry| File.directory? File.join("#{DIR}/templates",entry) and !(entry =='.' || entry == '..') }
-
-  CENTOS_TEMPLATE = DIR + '/templates/centos/centos.json.erb'
-  CENTOS_INSTAL = DIR + '/templates/centos/centos.cfg.erb'
-  DEBIAN_TEMPLATE = DIR + '/templates/debian/debian.json.erb'
-  DEBIAN_INSTAL = DIR + '/templates/debian/debian.cfg.erb'
-  SL_TEMPLATE = DIR + '/templates/sl/sl.json.erb'
-  SL_INSTAL = DIR + '/templates/sl/sl.cfg.erb'
-  UBUNTU_TEMPLATE = DIR + '/templates/ubuntu/ubuntu.json.erb'
-  UBUNTU_INSTAL = DIR + '/templates/ubuntu/ubuntu.cfg.erb'
+  DISTROS = Dir.entries(DIR).select { |entry| entry != '.' && entry != '..' }
+  PARAMETERS = {}
+  PARAMETERS['debian'] = "7.8.0"
+  PARAMETERS['ubuntu'] = "trusty"
+  PARAMETERS['sl'] = "6.5"
+  PARAMETERS['centos'] = "7.0.1406"
+  FORMATS = [:qcow2, :raw]
 
 # Return a structure with options
 
   def self.parse(args)
 
     options = OpenStruct.new
+    options.params = {}
 
     opt_parser = OptionParser.new do |opts|
       opts.banner = 'Usage of COMFY tool: comfy.rb [options]'
       opts.separator ''
 
-      opts.on('--distros centos, debian, sl, ubuntu', Array,
-              'List of distributions to create:',
-              'centos',
-              'debian',
-              'sl',
-              'ubuntu',
-              'By default, it is all of them',
-              ' ') do |list|
+      opts.on('-d', '--distributions DISTRO1[,DISTRO2,...]', Array,
+              'Select distributions for buliding. '\
+              "Available distributions: #{DISTROS.join(', ')}. "\
+              'Defaults to all available distributions.') do |list|
         options.distros = list
       end
 
-      formats = [:raw, :qcow2]       
-      opts.on('--format=FORMAT', formats,
-              'Select the output format of the virtual machine image.',
-              'Choose from ["raw", "qcow2"].',
-              'By default, it is "qcow2".',
-              ' ') do |f|
-        options.format = f
+      opts.on('-f', '--format [FORMAT]', FORMATS,
+              'Select the output format of the virtual machine image (raw, qcow2). '\
+              'Defaults to qcow2.') do |format|
+        options.format = format
       end
 
-      opts.on('--size [NUMBER]', Integer,
-              'The size in MB of the hard disk to create for the VM',
-              'By default, it is 5000 (5GB)',
-              ' ') do |s|
-        options.size = s
+      opts.on('-s', '--size [NUMBER]', Integer,
+              'Specify disk size for created virtual machines (in MB). '\
+              'Defaults to 5000MB (5GB)') do |size|
+        options.size = size
+      end
+
+      DISTROS.each do |distro|
+        opts.on("--#{distro} [PARAMETERS]",
+                "Specify parameters for building #{distro} virtual machine.") do |params|
+          options.params[distro] = params if params
+        end
       end
 
       opts.on_tail('-h', '--help', 'Shows this message') do
@@ -79,7 +66,7 @@ class ComfyOpts
         exit
       end
     end
-    
+
     begin
       opt_parser.parse!(args)
     rescue OptionParser::ParseError => e
@@ -89,55 +76,72 @@ class ComfyOpts
 
     set_defaults(options)
     check_files(options)
-    check_distros(options)
+    check_options_restrictions(options)
+    check_settings_restrictions
 
     options
-  end  # parse()
+  end
 
-  # Set default values for not specified options
+# parse()
+
+# Set default values for not specified options
   def self.set_defaults(options)
     options.format = FORMAT_DEFAULT unless options.format
     options.size = SIZE_DEFAULT unless options.size
-    options.distros = DISTROS_DEFAULT unless options.distros 
+    options.distros = DISTROS unless options.distros
+
+    options.distros.each do |distro|
+      unless options.params.include? distro
+        options.params[distro] = PARAMETERS[distro]
+      end
+    end
   end
 
-  # Make sure we have templates
+# Make sure we have templates
   def self.check_files(options)
+    options.distros.each do |distro|
+      dir = "#{DIR}/#{distro}"
+      cfg = "#{dir}/#{distro}.cfg.erb"
+      json = "#{dir}/#{distro}.json.erb"
 
-    missing_files = ''
-
-    #make sure date range make sense
-    if options.distros.include? 'centos'
-      if !File.file?(CENTOS_TEMPLATE) || !File.file?(CENTOS_INSTAL)
-        missing_files << "Missing template or kickstart file for CentOS.\n"
+      unless File.exists?(dir) && File.exists?(cfg) && File.exists?(json)
+        fail ArgumentError, "Missing some configuration files for selected distribution #{distro}."
       end
     end
-    if options.distros.include? 'debian'
-      if !File.file?(DEBIAN_TEMPLATE) || !File.file?(DEBIAN_INSTAL)
-        missing_files << "Missing template of pressed file for Debian.\n"
-      end
-    end
-    if options.distros.include? 'sl'
-      if !File.file?(SL_TEMPLATE) || !File.file?(SL_INSTAL)
-        missing_files << "Missing template or kickstart file for SL.\n"
-      end
-    end
-    if options.distros.include? 'ubuntu'
-      if !File.file?(UBUNTU_TEMPLATE) || !File.file?(UBUNTU_INSTAL)
-        missing_files << "Missing template or preseed file for Ubuntu.\n"
-      end
-    end
-
-    fail IOError, missing_files unless missing_files.empty? 
-  end  #check_files
-
-  def self.check_distros(options)
-    puts "[WARNING]:Used some unknown distros, but moving on.\n\n" unless DISTROS_DEFAULT.contains_all? options.distros
   end
 
+  def self.check_options_restrictions(options)
+    options.distros.each do |distro|
+      unless DISTROS.include? distro
+        options.params.delete distro
+        options.distros.delete distro
+        puts "Unknown distribution #{distro}. Will be skipped."
+      end
+    end
+
+    if options.distros.empty?
+      fail ArgumentError, 'No distributions to build.'
+    end
+
+    if options.size <= 0
+      fail ArgumentError, 'Disk size cannot be 0 or less.'
+    end
+
+    unless FORMATS.include? options.format
+      fail ArgumentError, 'Unknown file format.'
+    end
+  end
+
+  def self.check_settings_restrictions
+    #make sure output directory is set
+    unless Settings['output'] && Settings.output['output_dir']
+      fail ArgumentError, 'Missing output directory. Check your configuration file.'
+    end
+
+    #make sure log file is specified while logging to file
+    if Settings['logging'] && Settings.logging['log_type'] == 'file' &&
+        !Settings.logging['log_file']
+      fail ArgumentError, 'Missing file for logging. Check your configuration file.'
+    end
+  end
 end
-
-
-
-__END__
-

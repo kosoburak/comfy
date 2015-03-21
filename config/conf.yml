@@ -1,13 +1,13 @@
 ---
 defaults: &defaults
-  input:
-    scripts: lib/scripts
   output:
-    output_dir: output/comfy
+    output_dir: /opt/comfy/virtualmachines/
   logging:
-    log_type: file
-    log_file: /logging/comfy.log
+    log_level: ERROR
+    log_type: file # Two options: file, syslog. Defaults to stdout
+    log_file: /var/log/comfy/comfy.log # Used when type file selected
 
+########!!!!!!!DO NOT EDIT AFTER THIS POINT!!!!!!##########
 
 production:
   <<: *defaults
