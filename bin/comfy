@@ -1,13 +1,11 @@
 #!/usr/bin/env ruby
-require 'comfy_opts'
-require 'comfy_templater'
-require 'comfy_creator'
+require 'comfy'
 require 'fileutils'
 require 'syslogger'
 require 'settings'
 
 #Command line options handling
-options = ComfyOpts.parse(ARGV)
+options = Comfy::Opts.parse(ARGV)
 
 #Logger initialization
 logger = Logger.new(STDOUT)
@@ -31,14 +29,6 @@ else
   logger.level = Logger::ERROR
 end
 
-#Create output dir
-begin
-  FileUtils.mkdir_p Settings.output['output_dir']
-rescue SystemCallError => e
-  puts "Problem creating output directory: #{e.message}. Aborting."
-  exit
-end
-
 opts = {}
 opts[:size] = options.size
 opts[:format] = options.format
@@ -47,8 +37,7 @@ opts[:params] = options.params
 
 logger.debug("Starting Comfy with options: #{opts}.")
 
-#run creator
-#comfy_creator = ComfyCreator.new(opts, logger)
-#comfy_creator.create
+creator = Comfy::Creator.new(opts, logger)
+creator.create
 
 

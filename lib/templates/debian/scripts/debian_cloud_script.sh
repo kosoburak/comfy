@@ -4,40 +4,27 @@
 ######################CESNET CLOUD#########################
 ###########################################################
 
-# What OS it is? 
-OS=$(lsb_release -si)
+# Download and install cloud-init and dependencies
+wget apt.cerit-sc.cz/cloud-init/pool/main/p/python-json-patch/python-jsonpatch_1.3-4_all.deb
+wget apt.cerit-sc.cz/cloud-init/pool/main/p/python-json-pointer/python-json-pointer_1.0-2_all.deb
+wget apt.cerit-sc.cz/cloud-init/pool/main/c/cloud-init/cloud-init_0.7.5~bzr934-1_all.deb
 
-case $OS in
+dpkg -i python-json-pointer_1.0-2_all.deb
+apt-get --assume-yes install -f 
+dpkg -i python-jsonpatch_1.3-4_all.deb
+apt-get --assume-yes install -f
+dpkg -i cloud-init_0.7.5~bzr934-1_all.deb
+apt-get --assume-yes install -f
+DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" heimdal-clients libpam-heimdal
 
-  'Debian')
+# Enable services
+insserv cloud-init-local
+insserv cloud-init
+insserv cloud-config
+insserv cloud-final
 
-    # Download and install cloud-init and dependencies
-#    apt-get --assume-yes install python
-#    apt-get --assume-yes install build-essential
-#    apt-get --assume-yes install -f
+mv /root/cloud.cfg /etc/cloud/cloud.cfg
+mv /root/krb5.conf /etc/krb5.conf
+mv /root/sshd_config /etc/ssh/sshd_config
 
-    wget apt.cerit-sc.cz/cloud-init/pool/main/p/python-json-patch/python-jsonpatch_1.3-4_all.deb
-    wget apt.cerit-sc.cz/cloud-init/pool/main/p/python-json-pointer/python-json-pointer_1.0-2_all.deb
-    wget apt.cerit-sc.cz/cloud-init/pool/main/c/cloud-init/cloud-init_0.7.5~bzr934-1_all.deb
-
-    dpkg -i python-json-pointer_1.0-2_all.deb
-    apt-get --assume-yes install -f 
-    dpkg -i python-jsonpatch_1.3-4_all.deb
-    apt-get --assume-yes install -f
-    dpkg -i cloud-init_0.7.5~bzr934-1_all.deb
-    apt-get --assume-yes install -f
-
-    # Enable services
-    insserv cloud-init-local
-    insserv cloud-init
-    insserv cloud-config
-    insserv cloud-final
-
-    # Download cloud config file for deb
-    wget aisa.fi.muni.cz/~xkosaris/cesnet/debian/cloud.cfg
-    mv cloud.cfg /etc/cloud
-    ;;
-
-esac
-
-exit 0
+passwd -l root

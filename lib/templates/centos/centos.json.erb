@@ -2,12 +2,12 @@
     "builders":
     [
         {
-            "name": "centOS",
+            "name": "centos",
             "type": "qemu",
-            "iso_url": "http://merlin.fit.vutbr.cz/mirrors/centos/7.0.1406/isos/x86_64/CentOS-7.0-1406-x86_64-NetInstall.iso",
-            "iso_checksum": "e5a2c3c6d245b17e8d6ae2c31d2f34b62c273a0e",
-            "iso_checksum_type": "sha1",
-            "output_directory": "<%= @data[:output_dir] %>/centOS_7.0",
+            "iso_url": "http://merlin.fit.vutbr.cz/mirrors/centos/<%= @data[:parameters][:version] -%>/isos/x86_64/CentOS-<%= @data[:parameters][:version] -%>-x86_64-NetInstall.iso",
+            "iso_checksum": "<%= @data[:parameters][:checksum] -%>",
+            "iso_checksum_type": "sha256",
+            "output_directory": "<%= @data[:output_dir] %>/centos",
             "ssh_wait_timeout": "130m",
             "shutdown_command": "shutdown -h now",
             "format": "<%= @data[:format] %>",
@@ -16,23 +16,36 @@
             "accelerator": "kvm",
             "ssh_username": "root",
             "ssh_password": "<%= @data[:password] %>",
-            "vm_name": "centOS",
+            "vm_name": "centos",
             "boot_command":
               [
               "<esc>",
-              " linux ks=<%= @data[:url] %>/centos.cfg",
+              " linux ks=http://<%= @data[:host_ip] %>:4242/centos.cfg",
               "<enter>"
               ]
         }
-    ],
+    ]<% if @data[:provisioners] -%>,
 
     "provisioners":
     [
-      {
-        "type": "shell",
-        "script": "<%= @data[:scripts] %>/centos_cloud_script.sh"
-      }
+        <% @data[:provisioners][:files].each_with_index do |file,i| -%>
+        {
+            "type": "file",
+            "source": "<%= file %>",
+            "destination" : "/root/<%= file.split('/').last %>"
+        }<%if i != (@data[:provisioners][:files].size - 1) || @data[:provisioners][:scripts] %>,
+        <% end -%>
+        <% end -%>
+
+        <% @data[:provisioners][:scripts].each_with_index do |script,i| -%>
+        {
+            "type": "shell",
+            "script": "<%= script %>"
+        }<%unless i == (@data[:provisioners][:scripts].size - 1) %>,
+        <% end -%>
+        <% end -%>
     ]
+    <% end -%>
 
 }
 

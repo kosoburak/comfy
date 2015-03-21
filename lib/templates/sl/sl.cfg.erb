@@ -11,7 +11,7 @@ rootpw <%= @data[:password] %>
 ## Fresh install, not an upgrade
 install
 ## Specify install source - install via HTTP, more SL urls here: http://www.scientificlinux.org/download/mirrors
-url --url=http://ftp1.scientificlinux.org/linux/scientific/6.5/x86_64/os/
+url --url=http://ftp1.scientificlinux.org/linux/scientific/<%= @data[:parameters][:version] -%>/x86_64/os/
 ## Disk Partitioning - how the boot loader should be installed, delete all partitions/mbr, then create new layout
 bootloader --location=mbr
 zerombr

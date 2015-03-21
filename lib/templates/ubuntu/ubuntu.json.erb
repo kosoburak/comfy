@@ -4,10 +4,10 @@
 	{
             "name": "ubuntu",
             "type": "qemu",
-            "iso_url": "http://archive.ubuntu.com/ubuntu/dists/trusty/main/installer-amd64/current/images/netboot/mini.iso",
-            "iso_checksum": "e1e074b4302898698977c08013e0afe5c06245e2",
-            "iso_checksum_type": "sha1",
-            "output_directory": "<%= @data[:output_dir] %>/ubuntu_14.04",
+            "iso_url": "http://archive.ubuntu.com/ubuntu/dists/<%= @data[:parameters][:version] -%>/main/installer-amd64/current/images/netboot/mini.iso",
+            "iso_checksum": "<%= @data[:parameters][:checksum] -%>",
+            "iso_checksum_type": "sha256",
+            "output_directory": "<%= @data[:output_dir] %>/ubuntu/",
             "ssh_wait_timeout": "90m",
             "shutdown_command": "shutdown -h now",
             "format": "<%= @data[:format] %>"
@@ -20,18 +20,30 @@
             "boot_command": 
               [
               "<esc>",
-              " install auto=true priority=critical preseed/url=<%= @data[:url] %>/ubuntu.cfg",
+              " install auto=true priority=critical preseed/url=http://<%= @data[:host_ip] %>:4242/ubuntu.cfg",
               "<enter>"
               ]
         }
-    ],
+    ]<% if @data[:provisioners] -%>,
 
     "provisioners":
     [
-      {
-        "type": "shell",
-        "script": "<%= @data[:scripts] %>/ubuntu_cloud_script.sh"
-      }
-    ]
+        <% @data[:provisioners][:files].each_with_index do |file,i| -%>
+        {
+            "type": "file",
+            "source": "<%= file %>",
+            "destination" : "/root/<%= file.split('/').last %>"
+        }<%if i != (@data[:provisioners][:files].size - 1) || @data[:provisioners][:scripts] %>,
+        <% end -%>
+        <% end -%>
 
+        <% @data[:provisioners][:scripts].each_with_index do |script,i| -%>
+        {
+            "type": "shell",
+            "script": "<%= script %>"
+        }<%unless i == (@data[:provisioners][:scripts].size - 1) %>,
+        <% end -%>
+        <% end -%>
+    ]
+    <% end -%>
 }
