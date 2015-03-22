@@ -18,7 +18,7 @@ module Comfy
     PARAMETERS = {}
     PARAMETERS['debian'] = 'version=7.8.0 checksum=e39c36d6adc0fd86c6edb0e03e22919086c883b37ca194d063b8e3e8f6ff6a3a'
     PARAMETERS['ubuntu'] = 'version=trusty checksum=bc09966b54f91f62c3c41fc14b76f2baa4cce48595ce22e8c9f24ab21ac8d965'
-    PARAMETERS['sl'] = 'version=6.6 checksum=69ae526acb44e51f50a25a706f549522cf4bf9dec020ba9f3e39eeb1c06113cb release_date=2014-11-05'
+    PARAMETERS['sl'] = 'version=7.0 checksum=fd2e98c2c79b3d7e6e1211033de398e407c615300270aca22d7c8729121a27b3 release_date=2014-10-27'
     PARAMETERS['centos'] = 'version=7.0.1406 checksum=df6dfdd25ebf443ca3375188d0b4b7f92f4153dc910b17bccc886bd54a7b7c86'
     FORMATS = [:qcow2, :raw]
 

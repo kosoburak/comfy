@@ -10,11 +10,11 @@
             "output_directory": "<%= @data[:output_dir] %>/ubuntu/",
             "ssh_wait_timeout": "90m",
             "shutdown_command": "shutdown -h now",
-            "format": "<%= @data[:format] %>"
+            "format": "<%= @data[:format] %>",
             "disk_size": <%=@data[:size] %>,
             "headless": false,
             "accelerator": "kvm",
-            "ssh_username": "cloud",
+            "ssh_username": "root",
             "ssh_password": "<%= @data[:password] %>",
             "vm_name": "ubuntu",
             "boot_command": 
@@ -33,7 +33,7 @@
             "type": "file",
             "source": "<%= file %>",
             "destination" : "/root/<%= file.split('/').last %>"
-        }<%if i != (@data[:provisioners][:files].size - 1) || @data[:provisioners][:scripts] %>,
+        }<%if i != (@data[:provisioners][:files].size - 1) || (@data[:provisioners][:scripts] && !@data[:provisioners][:scripts].empty?) %>,
         <% end -%>
         <% end -%>
 

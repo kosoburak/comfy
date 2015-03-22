@@ -2,7 +2,7 @@ install
 url --url=http://mirror.nextlayer.at/centos/<%= @data[:parameters][:version] -%>/os/x86_64/
 lang en_US.UTF-8
 keyboard us
-network --bootproto=dhcp
+network --onboot yes --bootproto=dhcp
 rootpw <%= @data[:password] %>
 firewall --enabled --service=ssh
 authconfig --enableshadow --passalgo=sha512

@@ -42,7 +42,7 @@ module Comfy
           next
         end
 
-        packer = Mixlib::ShellOut.new("packer build #{server_dir}/#{distro}.json", :timeout => 3600)
+        packer = Mixlib::ShellOut.new("packer build #{server_dir}/#{distro}.json", :timeout => 5400)
         packer.live_stream = @logger
         packer.run_command
 

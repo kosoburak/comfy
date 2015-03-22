@@ -27,4 +27,7 @@ mv /root/cloud.cfg /etc/cloud/cloud.cfg
 mv /root/krb5.conf /etc/krb5.conf
 mv /root/sshd_config /etc/ssh/sshd_config
 
-passwd -l root
+passwd -d root
+
+rm -f ~/.bash_history
+rm -f /var/log/cloud-init*

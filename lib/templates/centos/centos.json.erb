@@ -4,7 +4,7 @@
         {
             "name": "centos",
             "type": "qemu",
-            "iso_url": "http://merlin.fit.vutbr.cz/mirrors/centos/<%= @data[:parameters][:version] -%>/isos/x86_64/CentOS-<%= @data[:parameters][:version] -%>-x86_64-NetInstall.iso",
+            "iso_url": "http://merlin.fit.vutbr.cz/mirrors/centos/<%= @data[:parameters][:version] -%>/isos/x86_64/CentOS-<%= @data[:parameters][:version].reverse.sub('.','-').reverse -%>-x86_64-NetInstall.iso",
             "iso_checksum": "<%= @data[:parameters][:checksum] -%>",
             "iso_checksum_type": "sha256",
             "output_directory": "<%= @data[:output_dir] %>/centos",
@@ -33,7 +33,7 @@
             "type": "file",
             "source": "<%= file %>",
             "destination" : "/root/<%= file.split('/').last %>"
-        }<%if i != (@data[:provisioners][:files].size - 1) || @data[:provisioners][:scripts] %>,
+        }<%if i != (@data[:provisioners][:files].size - 1) || (@data[:provisioners][:scripts] && !@data[:provisioners][:scripts].empty?) %>,
         <% end -%>
         <% end -%>
 

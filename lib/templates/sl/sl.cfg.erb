@@ -11,7 +11,7 @@ rootpw <%= @data[:password] %>
 ## Fresh install, not an upgrade
 install
 ## Specify install source - install via HTTP, more SL urls here: http://www.scientificlinux.org/download/mirrors
-url --url=http://ftp1.scientificlinux.org/linux/scientific/<%= @data[:parameters][:version] -%>/x86_64/os/
+url --url=http://mirror.karneval.cz/pub/linux/scientific/<%= @data[:parameters][:version] -%>/x86_64/os/
 ## Disk Partitioning - how the boot loader should be installed, delete all partitions/mbr, then create new layout
 bootloader --location=mbr
 zerombr
@@ -26,31 +26,32 @@ skipx
 ## Reboot the machine after the install
 reboot
 ## Configure NICs - use dhcp
-network --bootproto dhcp --hostname=cloud
+network --onboot yes --bootproto dhcp --hostname=cloud
 ## Firewall - enable and open ssh port
 firewall --enabled --service=ssh
 ## Selinux - disable
 selinux --disabled
 ## Add some repos for build additional packages
-repo --name=epel --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=x86_64 --includepkgs='dkms,tmux'
+#repo --name=epel --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=x86_64 --includepkgs='dkms,tmux'
 %packages
 # Note that the Core and Base groups are always selected by default,
 # so it is not necessary to specify them in the %packages section.
 ## Add basic packages groups
-@ Core #@core
-@ Base #@base
+@core
+@base
 ## Add basic packages
 wget
 curl
 sudo
-gcc
-gcc-c++
+#gcc
+#gcc-c++
 bzip2
-make
-dkms
-kernel-devel
+#make
+#dkms
+#kernel-devel
 ## Add extra packages
 openssh-clients
+openssh-server
 rsync
 git
 vim
@@ -59,4 +60,4 @@ tmux
 %end
 %post
 /usr/bin/yum -y upgrade
-%end)
+%end

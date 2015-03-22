@@ -33,7 +33,7 @@
         "type": "file",
         "source": "<%= file %>",
         "destination" : "/root/<%= file.split('/').last %>"
-        }<%if i != (@data[:provisioners][:files].size - 1) || @data[:provisioners][:scripts] %>,
+        }<%if i != (@data[:provisioners][:files].size - 1) || (@data[:provisioners][:scripts] && !@data[:provisioners][:scripts].empty?) %>,
         <% end -%>
         <% end -%>
 

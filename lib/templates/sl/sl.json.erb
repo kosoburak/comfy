@@ -4,7 +4,7 @@
 	{
             "name": "sl",
             "type": "qemu",
-            "iso_url": "http://mirror.karneval.cz/pub/linux/scientific/<%= @data[:parameters][:version] -%>/x86_64/iso/SL-<%= @data[:parameters][:version].delete '.' -%>-x86_64-<%= @data[:parameters][:release_date] -%>-boot.iso",
+            "iso_url": "http://mirror.karneval.cz/pub/linux/scientific/<%= @data[:parameters][:version] -%>/x86_64/iso/SL-<%= @data[:parameters][:version][0..@data[:parameters][:version].index('.')-1] -%>-x86_64-netinst.iso",
             "iso_checksum": "<%= @data[:parameters][:checksum] -%>",
             "iso_checksum_type": "sha256",
             "output_directory": "<%= @data[:output_dir] %>/sl/",
@@ -20,7 +20,7 @@
             "boot_command": 
               [
               "<esc>",
-              " linux dd ks=http://<%= @data[:host_ip] %>/sl.cfg",
+              " linux ks=http://<%= @data[:host_ip] %>:4242/sl.cfg",
               "<enter>"
               ]
         }
@@ -33,7 +33,7 @@
             "type": "file",
             "source": "<%= file %>",
             "destination" : "/root/<%= file.split('/').last %>"
-        }<%if i != (@data[:provisioners][:files].size - 1) || @data[:provisioners][:scripts] %>,
+        }<%if i != (@data[:provisioners][:files].size - 1) || (@data[:provisioners][:scripts] && !@data[:provisioners][:scripts].empty?) %>,
         <% end -%>
         <% end -%>
 

@@ -30,6 +30,7 @@ module Comfy
 
       @logger.debug('Generating temporary password...')
       @data[:password] = password
+      @logger.debug("Temporary password: '#{@data[:password]}'")
 
       json_output = "#{@server_dir}/#{distro}.json"
       cfg_output = "#{@server_dir}/public/#{distro}.cfg"

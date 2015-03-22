@@ -46,16 +46,19 @@ d-i partman/choose_partition select finish
 d-i partman/mount_style select uuid
         
 # Account
-d-i passwd/user-fullname string cloud
-d-i passwd/username string cloud
-d-i passwd/user-password password <%= @data[:password] %>
-d-i passwd/user-password-again password veslo <%= @data[:password] %>
-d-i user-setup/encrypt-home boolean false
-d-i user-setup/allow-password-weak boolean true
+#d-i passwd/user-fullname string temporary_user
+#d-i passwd/username string temporary_user
+#d-i passwd/user-password password <%= @data[:password] %>
+#d-i passwd/user-password-again password <%= @data[:password] %>
+#d-i user-setup/encrypt-home boolean false
+#d-i user-setup/allow-password-weak boolean true
+d-i passwd/make-user boolean false
 
 # Root password
-d-i passwd/root-password password veslo
-d-i passwd/root-password-again password veslo
+d-i passwd/root-login boolean true
+#d-i passwd/root-password password <%= @data[:password] %>
+#d-i passwd/root-password-again password <%= @data[:password] %>
+d-i passwd/root-password-crypted password <%= @data[:password].crypt('$6$' + rand(36 ** 8).to_s(36)) %>
        
 # Base system installation
 #d-i base-installer/install-recommends boolean false
@@ -85,3 +88,6 @@ d-i pkgsel/upgrade select none
 d-i grub-installer/only_debian boolean true
 d-i grub-installer/with_other_os boolean false
 d-i finish-install/reboot_in_progress note
+
+#SSH
+d-i openssh-server openssh-server/permit-root-login boolean true
