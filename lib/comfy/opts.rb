@@ -144,7 +144,7 @@ module Comfy
       end
 
       #make sure packer cache directory is set
-      unless Settings['packer_cachce_dir']
+      unless Settings['packer_cache_dir']
         fail ArgumentError, 'Missing Packer cachce directory.'
       end
       ENV['PACKER_CACHE_DIR'] = Settings['packer_cachce_dir']

@@ -21,7 +21,7 @@ module Comfy
       server.run_command
       if server.error?
         @logger.error("Error occurred during server start. Aborting.")
-        FileUtils.remove_dir("#{server_dir}")
+        clean(server_dir)
         exit 1
       end
 
@@ -56,6 +56,10 @@ module Comfy
       end
 
       @logger.info('All distributions finished.')
+      clean(server_dir)
+    end
+
+    def clean(server_dir)
       @logger.info('Stopping local webserver...')
       server = Mixlib::ShellOut.new("thin -P #{Dir.tmpdir}/thin.pid stop", :cwd => "#{GEM_DIR}/server")
       server.run_command

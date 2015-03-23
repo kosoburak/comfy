@@ -1,0 +1,2 @@
+## CERIT-SC's cloud-init repository
+deb http://apt.cerit-sc.cz/cloud-init/ wheezy main

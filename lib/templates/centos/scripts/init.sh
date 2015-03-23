@@ -2,7 +2,7 @@
 
 yum -y install http://ftp.astral.ro/mirrors/fedora/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
 yum -y install cloud-init
-yum -y install heimdal-appl-clients
+yum -y install krb5-libs krb5-workstation pam_krb5
 
 systemctl enable cloud-init-local
 systemctl enable cloud-init

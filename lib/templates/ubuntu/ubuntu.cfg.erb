@@ -56,9 +56,9 @@ d-i passwd/make-user boolean false
 
 # Root password
 d-i passwd/root-login boolean true
-#d-i passwd/root-password password <%= @data[:password] %>
-#d-i passwd/root-password-again password <%= @data[:password] %>
-d-i passwd/root-password-crypted password <%= @data[:password].crypt('$6$' + rand(36 ** 8).to_s(36)) %>
+d-i passwd/root-password password <%= @data[:password] %>
+d-i passwd/root-password-again password <%= @data[:password] %>
+#d-i passwd/root-password-crypted password <%= @data[:password].crypt('$6$' + rand(36 ** 8).to_s(36)) %>
        
 # Base system installation
 #d-i base-installer/install-recommends boolean false
@@ -89,5 +89,5 @@ d-i grub-installer/only_debian boolean true
 d-i grub-installer/with_other_os boolean false
 d-i finish-install/reboot_in_progress note
 
-#SSH
-d-i openssh-server openssh-server/permit-root-login boolean true
+# SSH hack to allow root login
+d-i preseed/late_command string in-target sed -i "s/PermitRootLogin without-password/PermitRootLogin yes/" /etc/ssh/sshd_config
