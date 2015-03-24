@@ -147,7 +147,7 @@ module Comfy
       unless Settings['packer_cache_dir']
         fail ArgumentError, 'Missing Packer cachce directory.'
       end
-      ENV['PACKER_CACHE_DIR'] = Settings['packer_cachce_dir']
+      ENV['PACKER_CACHE_DIR'] = Settings['packer_cache_dir']
 
       #make sure log file is specified while logging to file
       if Settings['logging'] && Settings.logging['log_type'] == 'file' &&
