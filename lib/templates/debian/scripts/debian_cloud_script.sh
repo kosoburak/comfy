@@ -11,7 +11,7 @@ rm -f /root/RPM-GPG-KEY-CERIT-SC.cfg
 apt-get update
 apt-get --assume-yes upgrade
 apt-get --assume-yes install cloud-init
-apt-get --assume-yes install qemu-utils
+apt-get --assume-yes install qemu-guest-agent
 DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" heimdal-clients heimdal-servers libpam-heimdal
 
 # Enable services

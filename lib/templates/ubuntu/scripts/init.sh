@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 
+apt-get update
+
 if [ "x$(lsb_release -rs)" == "x12.04" ]; then
-  apt-get update
   apt-get --assume-yes install python-software-properties
   add-apt-repository -y ppa:iweb-openstack/cloud-init
+else
+  apt-get --assume-yes install qemu-guest-agent
 fi
 
 apt-get update
 apt-get --assume-yes upgrade
 apt-get --assume-yes install cloud-init
-apt-get --assume-yes install qemu-utils
 DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" heimdal-clients heimdal-servers libpam-heimdal
 
 mv /root/cloud.cfg /etc/cloud/cloud.cfg
