@@ -3,7 +3,7 @@ defaults: &defaults
   output:
     output_dir: /opt/comfy/virtualmachines/
   host_ip: 10.0.2.2
-  packer_cache_dir: /opt/comfy/packer_cachce/
+  packer_cache_dir: /opt/comfy/packer_cache/
   logging:
     log_level: ERROR
     log_type: file # Two options: file, syslog. Defaults to stdout
