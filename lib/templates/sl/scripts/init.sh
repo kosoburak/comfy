@@ -16,5 +16,10 @@ mv /root/sshd_config /etc/ssh/sshd_config
 
 passwd -d root
 
+chmod u+w /etc/sudoers
+sed -i s/'Defaults    requiretty'/'#Defaults    requiretty'/g /etc/sudoers
+chmod -w /etc/sudoers
+
 rm -f ~/.bash_history
 rm -f /var/log/cloud-init*
+
