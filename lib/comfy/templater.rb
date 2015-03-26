@@ -13,7 +13,6 @@ module Comfy
       @common_data[:format] = options[:format]
       @common_data[:size] = options[:size]
       @common_data[:output_dir] = Settings.output['output_dir']
-      @common_data[:host_ip] = Settings['host_ip']
       @server_dir = server_dir
       @logger = logger
       @distro_data = {}
@@ -22,6 +21,7 @@ module Comfy
     # Prepares *.json and *.cfg files from templates for selected distribution
     def prepare_files(distro, parameters)
       @data = prepare_data(distro, parameters)
+      @data[:server_dir] = @server_dir
 
       @logger.debug('Creating temporary files...')
       cfg_tmp = Tempfile.new('comfy_cfg')
@@ -33,7 +33,7 @@ module Comfy
       @logger.debug("Temporary password: '#{@data[:password]}'")
 
       json_output = "#{@server_dir}/#{distro}.json"
-      cfg_output = "#{@server_dir}/public/#{distro}.cfg"
+      cfg_output = "#{@server_dir}/#{distro}.cfg"
 
       template_path = "#{GEM_DIR}/lib/templates/#{distro}"
 
