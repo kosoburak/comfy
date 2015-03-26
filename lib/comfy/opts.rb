@@ -138,11 +138,6 @@ module Comfy
         fail ArgumentError, 'Missing output directory. Check your configuration file.'
       end
 
-      #make sure host ip is set
-      unless Settings['host_ip']
-        fail ArgumentError, 'Missing host system ip address.'
-      end
-
       #make sure packer cache directory is set
       unless Settings['packer_cache_dir']
         fail ArgumentError, 'Missing Packer cachce directory.'
