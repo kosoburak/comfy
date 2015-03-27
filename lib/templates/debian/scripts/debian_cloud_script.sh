@@ -12,7 +12,7 @@ apt-get update
 apt-get --assume-yes upgrade
 apt-get --assume-yes install cloud-init
 apt-get --assume-yes install qemu-guest-agent
-DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" heimdal-clients heimdal-servers libpam-heimdal
+DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" heimdal-clients libpam-heimdal
 
 # Enable services
 insserv cloud-init-local

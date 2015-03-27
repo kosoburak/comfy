@@ -12,7 +12,7 @@ fi
 apt-get update
 apt-get --assume-yes upgrade
 apt-get --assume-yes install cloud-init
-DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" heimdal-clients heimdal-servers libpam-heimdal
+DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" heimdal-clients libpam-heimdal
 
 mv /root/cloud.cfg /etc/cloud/cloud.cfg
 mv /root/krb5.conf /etc/krb5.conf
