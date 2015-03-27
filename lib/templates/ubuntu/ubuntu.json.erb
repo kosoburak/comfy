@@ -23,7 +23,7 @@
             "boot_command": 
               [
               "<esc>",
-              " install auto=true priority=critical preseed/url=http://{{ .HTTPIP }}: {{ .HTTPPort }}/ubuntu.cfg",
+              " install auto=true priority=critical preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu.cfg",
               "<enter>"
               ]
         }
