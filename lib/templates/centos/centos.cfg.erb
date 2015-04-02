@@ -13,7 +13,10 @@ text
 skipx
 zerombr
 clearpart --all --initlabel
-autopart
+part /boot --fstype ext4 --size=150
+part pv.01 --size=1 --grow
+volgroup vg_root pv.01
+logvol  /  --vgname=vg_root --size=1  --grow --name=
 auth --useshadow --enablemd5
 firstboot --disabled
 reboot

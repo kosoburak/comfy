@@ -16,7 +16,10 @@ url --url=http://mirror.karneval.cz/pub/linux/scientific/<%= @data[:parameters][
 bootloader --location=mbr
 zerombr
 clearpart --all --initlabel
-autopart
+part /boot --fstype ext4 --size=150
+part pv.01 --size=1 --grow
+volgroup vg_root pv.01
+logvol  /  --vgname=vg_root --size=1  --grow --name=
 ## Firstboot - the druid that helps you to set up the system after install - disabled
 firstboot --disabled
 ## Don't use GUI
