@@ -26,7 +26,8 @@ skipx
 ## Reboot the machine after the install
 reboot
 ## Configure NICs - use dhcp
-network --onboot yes --bootproto dhcp --hostname=cloud
+network --device=eth0 --bootproto dhcp --onboot=yes
+network --device=eth1 --bootproto dhcp --onboot=yes
 ## Firewall - enable and open ssh port
 firewall --enabled --service=ssh
 ## Selinux - disable
@@ -43,18 +44,11 @@ selinux --disabled
 wget
 curl
 sudo
-#gcc
-#gcc-c++
 bzip2
-#make
-#dkms
-#kernel-devel
 ## Add extra packages
 openssh-clients
 openssh-server
 rsync
-git
-vim
 mc
 tmux
 %end
