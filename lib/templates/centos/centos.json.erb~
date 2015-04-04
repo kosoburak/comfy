@@ -1,0 +1,58 @@
+{ 
+    "builders":
+    [
+        {
+            "name": "centos",
+            "type": "qemu",
+            "iso_url": "http://merlin.fit.vutbr.cz/mirrors/centos/<%= @data[:parameters][:version] -%>/isos/x86_64/CentOS-<%= @data[:parameters][:version].reverse.sub('.','-').reverse -%>-x86_64-NetInstall.iso",
+            "iso_checksum": "<%= @data[:parameters][:checksum] -%>",
+            "iso_checksum_type": "sha256",
+            "output_directory": "<%= @data[:output_dir] %>/centos",
+            "ssh_wait_timeout": "130m",
+            "shutdown_command": "shutdown -h now",
+            "format": "<%= @data[:format] %>",
+            "disk_size": <%= @data[:size] %>,
+            "headless": false,
+            "accelerator": "kvm",
+            "http_directory": "<%= @data[:server_dir] %>",
+            "http_port_min": 8500,
+            "http_port_max": 8550,
+            "ssh_username": "root",
+            "ssh_password": "<%= @data[:password] %>",
+            "vm_name": "centos",
+	    "qemuargs": [
+    				[ "-m", "1024M" ]
+  			],
+            "boot_command":
+              [
+              "<esc>",
+              " linux ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos.cfg",
+              "<enter>"
+              ]
+        }
+    ]<% if @data[:provisioners] -%>,
+
+    "provisioners":
+    [
+        <% @data[:provisioners][:files].each_with_index do |file,i| -%>
+        {
+            "type": "file",
+            "source": "<%= file %>",
+            "destination" : "/root/<%= file.split('/').last %>"
+        }<%if i != (@data[:provisioners][:files].size - 1) || (@data[:provisioners][:scripts] && !@data[:provisioners][:scripts].empty?) %>,
+        <% end -%>
+        <% end -%>
+
+        <% @data[:provisioners][:scripts].each_with_index do |script,i| -%>
+        {
+            "type": "shell",
+            "script": "<%= script %>"
+        }<%unless i == (@data[:provisioners][:scripts].size - 1) %>,
+        <% end -%>
+        <% end -%>
+    ]
+    <% end -%>
+
+}
+
+

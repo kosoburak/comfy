@@ -1,0 +1,63 @@
+# Locale
+lang en_US.UTF-8
+keyboard us
+timezone UTC
+# Authentication
+## Sets up the authentication options - use shadow passwords, use md5 encryption for user passwords
+authconfig --enableshadow --enablemd5
+## Sets the system's root password
+rootpw <%= @data[:password] %>
+# Kickstart
+## Fresh install, not an upgrade
+install
+## Specify install source - install via HTTP, more SL urls here: http://www.scientificlinux.org/download/mirrors
+url --url=http://mirror.karneval.cz/pub/linux/scientific/<%= @data[:parameters][:version] -%>/x86_64/os/
+## Disk Partitioning - how the boot loader should be installed, delete all partitions/mbr, then create new layout
+bootloader --location=mbr
+zerombr
+clearpart --all --initlabel
+part  / --size=1  --grow --name=SYSTEM
+## Firstboot - the druid that helps you to set up the system after install - disabled
+firstboot --disabled
+## Don't use GUI
+text
+## Don't configure X
+skipx
+## Reboot the machine after the install
+reboot
+## Configure NICs - use dhcp - disable IPv6
+network --onboot yes --bootproto dhcp --hostname=cloud --noipv6
+## Firewall - enable and open ssh port
+firewall --enabled --service=ssh
+## Selinux - disable
+selinux --disabled
+## Add some repos for build additional packages
+#repo --name=epel --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=x86_64 --includepkgs='dkms,tmux'
+%packages
+# Note that the Core and Base groups are always selected by default,
+# so it is not necessary to specify them in the %packages section.
+## Add basic packages groups
+@core
+@base
+## Add basic packages
+wget
+curl
+sudo
+#gcc
+#gcc-c++
+bzip2
+#make
+#dkms
+#kernel-devel
+## Add extra packages
+openssh-clients
+openssh-server
+rsync
+git
+vim
+mc
+tmux
+%end
+%post
+/usr/bin/yum -y upgrade
+%end

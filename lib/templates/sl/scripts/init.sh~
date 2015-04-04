@@ -15,7 +15,7 @@ systemctl enable cloud-final
 mv /root/cloud.cfg /etc/cloud/cloud.cfg
 mv /root/krb5.conf /etc/krb5.conf
 mv /root/sshd_config /etc/ssh/sshd_config
-mv /root/10-ipv6.conf /etc/sysctl.d/10-ipv6.conf
+mv /root/10-sysctl.conf /etc/sysctl.d/10-sysctl.conf
 
 passwd -d root
 
