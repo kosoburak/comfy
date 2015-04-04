@@ -16,10 +16,7 @@ url --url=http://mirror.karneval.cz/pub/linux/scientific/<%= @data[:parameters][
 bootloader --location=mbr
 zerombr
 clearpart --all --initlabel
-part /boot --fstype ext4 --size=150
-part pv.01 --size=1 --grow
-volgroup vg_root pv.01
-logvol  /  --vgname=vg_root --size=1  --grow --name=
+part  / --size=1  --grow
 ## Firstboot - the druid that helps you to set up the system after install - disabled
 firstboot --disabled
 ## Don't use GUI
@@ -28,8 +25,8 @@ text
 skipx
 ## Reboot the machine after the install
 reboot
-## Configure NICs - use dhcp
-network --onboot yes --bootproto dhcp --hostname=cloud
+## Configure NICs - use dhcp - disable IPv6
+network --onboot yes --bootproto dhcp --hostname=cloud --noipv6
 ## Firewall - enable and open ssh port
 firewall --enabled --service=ssh
 ## Selinux - disable
