@@ -25,6 +25,7 @@ mv /root/cloud.cfg /etc/cloud/cloud.cfg
 mv /root/krb5.conf /etc/krb5.conf
 mv /root/sshd_config /etc/ssh/sshd_config
 mv /root/interfaces /etc/network/interfaces
+mv /root/local.conf /etc/sysctl.d/local.conf
 
 ln -s /dev/null /etc/udev/rules.d/75-persistent-net-generator.rules
 
