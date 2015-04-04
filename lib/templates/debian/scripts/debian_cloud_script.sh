@@ -10,6 +10,7 @@ rm -f /root/RPM-GPG-KEY-CERIT-SC.cfg
 
 apt-get update
 apt-get --assume-yes upgrade
+apt-get --assume-yes install mingetty
 apt-get --assume-yes install cloud-init
 apt-get --assume-yes install qemu-guest-agent
 DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" heimdal-clients libpam-heimdal
@@ -26,6 +27,10 @@ mv /root/krb5.conf /etc/krb5.conf
 mv /root/sshd_config /etc/ssh/sshd_config
 mv /root/interfaces /etc/network/interfaces
 mv /root/10-ipv6.conf /etc/sysctl.d/10-ipv6.conf
+mv /root/grub /etc/default/grub
+mv /root/inittab /etc/inittab
+
+update-grub
 
 ln -s /dev/null /etc/udev/rules.d/75-persistent-net-generator.rules
 
