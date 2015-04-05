@@ -35,20 +35,29 @@ d-i clock-setup/utc boolean true
 d-i time/zone string Europe/Prague
 d-i clock-setup/ntp boolean true
 
-# Partitioning
-d-i partman-auto/method string lvm
-d-i partman-lvm/device_remove_lvm boolean true
+# Partition setting
 d-i partman-md/device_remove_md boolean true
-d-i partman-lvm/confirm boolean true
-d-i partman-lvm/confirm_nooverwrite boolean true
+d-i partman-lvm/device_remove_lvm boolean true
+    
+d-i partman-auto/choose_recipe select boot-root
+d-i partman-auto/init_automatically_partition select biggest_free
+d-i partman-auto/method string regular
 
-d-i partman-auto/choose_recipe select atomic
+d-i partman-auto/expert_recipe string                         \
+      boot-root ::                                            \
+              500 10000 1000000000 ext4                       \
+		      method{ format } format{ }	      \
+                      use_filesystem{ } filesystem{ ext4 }    \
+                      mountpoint{ / }                         \
+              .                                               
 
-d-i partman-partitioning/confirm_write_new_label boolean true
-d-i partman-partitioning/unknown_label boolean true
-d-i partman/choose_partition select finish
-d-i partman/confirm boolean true
+d-i partman/confirm_write_new_label boolean true
+d-i partman/choose_partition select  finish
 d-i partman/confirm_nooverwrite boolean true
+d-i partman/confirm boolean true
+d-i partman-basicfilesystems/no_swap boolean false
+d-i partman-basicfilesystems/no_swap seen true 
+d-i partman/mount_style select uuid
 
 
 d-i grub-installer/only_debian boolean true
@@ -66,6 +75,9 @@ tasksel tasksel/first multiselect none
 
 d-i pkgsel/include string openssh-server build-essential
 #d-i pkgsel/include string openssh-server git-buildpackage
+
+### Late install
+d-i preseed/late_command in-target echo "blacklist ipv6" >> /etc/modprobe.d/blacklist.conf
 
 popularity-contest popularity-contest/participate boolean false
 ### Finishing up the installation

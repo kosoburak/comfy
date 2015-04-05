@@ -20,6 +20,9 @@
             "ssh_username": "root",
             "ssh_password": "<%= @data[:password] %>",
             "vm_name": "sl",
+	    "qemuargs": [
+    				[ "-m", "1024M" ]
+  			],
             "boot_command": 
               [
               "<esc>",
