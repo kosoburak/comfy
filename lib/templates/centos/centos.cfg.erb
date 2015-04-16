@@ -1,5 +1,5 @@
 install
-url --url=http://mirror.nextlayer.at/centos/<%= @data[:parameters][:version] -%>/os/x86_64/
+url --url=http://mirror.nextlayer.at/centos/<%= @data[:parameters][:major_version] -%>/os/x86_64/
 lang en_US.UTF-8
 keyboard us
 network --device=eth0 --bootproto dhcp --onboot=yes --noipv6
