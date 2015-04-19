@@ -1,66 +1,49 @@
-# Kickstart
-# Fresh install, not an upgrade
+### Kickstart
+## Fresh install, not an upgrade
 install
-
-# Specify install source
+## Specify install source
 url --url=http://mirror.nextlayer.at/centos/<%= @data[:parameters][:version] -%>/os/x86_64/
-
-# Locale
+## Locale
 lang en_US.UTF-8
 keyboard us
 timezone UTC
-
-# Disk Partitioning - how the boot loader should be installed, delete all partitions/mbr, then create new layout
+## Disk Partitioning - how the boot loader should be installed, delete all partitions/mbr, then create
 bootloader --location=mbr
 zerombr
 clearpart --all --initlabel
 part  / --size=1  --grow --fstype ext4
-
-# Don't use GUI
+## Don't use GUI
 text
-
-# Don't configure X
+## Don't configure X
 skipx
-
-# Firstboot - the druid that helps you to set up the system after install - disabled
+## Firstboot - the druid that helps you to set up the system after install - disabled
 firstboot --disabled
-
-# Authentication
-# Sets up the authentication options - use shadow passwords, encryption for user passwords
+## Authentication
+## Sets up the authentication options - use shadow passwords, encryption for user passwords
 authconfig --enableshadow --passalgo=sha512
 auth --useshadow --enablemd5
-
-# Sets the system's root password
+## Sets the system's root password
 rootpw <%= @data[:password] %>
-
-# Configure NICs - use dhcp - disable IPv6
+## Configure NICs - use dhcp - disable IPv6
 network --device=eth0 --bootproto dhcp --onboot=yes --noipv6
 network --device=eth1 --bootproto dhcp --onboot=yes --noipv6
-
-# Firewall - enable and open ssh port
+## Firewall - enable and open ssh port
 firewall --enabled --service=ssh
-
-# Selinux - disable
+## Selinux - disable
 selinux --disabled
-
-# Reboot the machine after the install
+## Reboot the machine after the install
 reboot
-
 %packages --nobase
-
-# Add basic packages groups
+## Add basic packages groups
 @core
-
-# Add basic packages
+## Add basic packages
 wget
 curl
 bzip2
-
-# Add extra packages
+## Add extra packages
 openssh-clients
 openssh-server
 %end
-
 %post
 /usr/bin/yum -y install sudo
 %end
