@@ -4,11 +4,14 @@ require 'fileutils'
 require 'syslogger'
 require 'settings'
 
-#Command line options handling
-options = Comfy::Opts.parse(ARGV)
-
 #Logger initialization
 logger = Logger.new(STDOUT)
+
+#make sure log file is specified while logging to file
+if Settings['logging'] && Settings.logging['log_type'] == 'file' &&
+    !Settings.logging['log_file']
+  fail ArgumentError, 'Missing file for logging. Check your configuration file.'
+end
 
 #initialize specific logger according to the configuration
 if Settings['logging'] && Settings['logging']['log_type'] == 'file'
@@ -29,11 +32,19 @@ else
   logger.level = Logger::ERROR
 end
 
+#Command line options handling
+options = Comfy::Opts.parse(ARGV, logger)
+
 opts = {}
 opts[:size] = options.size
-opts[:format] = options.format
-opts[:distros] = options.distros
-opts[:params] = options.params
+opts[:builders] = options.formats
+opts[:distribution] = options.distribution
+opts[:headless] = !options.debug
+opts[:template_dir] = options.template_dir
+opts[:version] = options.version
+opts[:output_dir] = Settings['output_dir']
+
+logger.level = Logger::DEBUG if options.debug
 
 logger.debug("Starting Comfy with options: #{opts}.")
 
