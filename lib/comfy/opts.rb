@@ -2,6 +2,7 @@ require 'optparse'
 require 'ostruct'
 require 'pp'
 require 'settings'
+require 'fileutils'
 
 module Comfy
   # Class for parsing command line arguments
@@ -56,6 +57,19 @@ module Comfy
 
           versions.sort!
           versions.each { |version| puts version}
+          exit
+        end
+
+        opts.on('--export DESTINATION', 'Exports files for building virtual machines to directory DESTINATION. '\
+                'Helps with the customization of the build process.') do |dir|
+          unless File.exists?(dir) && File.directory?(dir)
+            FileUtils.mkdir_p dir
+          end
+
+          FileUtils.cp_r "#{DIR}/.", dir
+          puts 'Template files copied successfully.'
+          puts "In order to use the new template directory change setting 'vm_templates_dir' in your configuration file to:"
+          puts "vm_templates_dir: #{dir}"
           exit
         end
 
