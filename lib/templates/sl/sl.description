@@ -13,6 +13,7 @@
   },
   "virtualbox": {
     "guest_os_type": "RedHat_64",
-    "vboxmanage": [ ["modifyvm", "{{.Name}}", "--memory", "1024"] ]
+    "vboxmanage": [ ["modifyvm", "{{.Name}}", "--memory", "1024"] ],
+    "guest_additions_mode": "disable"
   }
 }

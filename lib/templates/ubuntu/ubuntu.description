@@ -14,13 +14,6 @@
       "name": "Precise Pangolin",
       "iso_url": "http://archive.ubuntu.com/ubuntu/dists/precise/main/installer-amd64/current/images/netboot/mini.iso",
       "iso_checksum": "7df121f07878909646c8f7862065ed7182126b95eadbf5e1abb115449cfba714"
-    },{
-      "major_version": "15",
-      "minor_version": "04",
-      "codename": "vivid",
-      "name": "Vivid Vervet",
-      "iso_url": "http://archive.ubuntu.com/ubuntu/dists/vivid/main/installer-amd64/current/images/netboot/mini.iso",
-      "iso_checksum": "4a45db4678556f3d45dbadfa168f2ea1908e7578941773d9408dbb233de59edc"
     }],
   "boot_command": " install auto=true priority=critical preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}",
   "qemu": {
@@ -29,6 +22,7 @@
   },
   "virtualbox": {
     "guest_os_type": "Ubuntu_64",
-    "vboxmanage": [ ["modifyvm", "{{.Name}}", "--memory", "1024"] ]
+    "vboxmanage": [ ["modifyvm", "{{.Name}}", "--memory", "1024"] ],
+    "guest_additions_mode": "disable"
   }
 }
