@@ -39,7 +39,7 @@ module Comfy
         exit(2)
       end
 
-      packer = Mixlib::ShellOut.new("packer build #{packer_file}", :timeout => 5400)
+      packer = Mixlib::ShellOut.new("packer build -parallel=false #{packer_file}", :timeout => 5400)
       packer.live_stream = @logger
       packer.run_command
 
