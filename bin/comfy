@@ -44,7 +44,11 @@ opts[:template_dir] = options.template_dir
 opts[:version] = options.version
 opts[:output_dir] = Settings['output_dir']
 
-logger.level = Logger::DEBUG if options.debug
+if options.debug
+  logger.level = Logger::DEBUG
+  ENV['PACKER_LOG'] = '1'
+end
+
 
 logger.debug("Starting Comfy with options: #{opts}.")
 
