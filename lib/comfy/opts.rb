@@ -21,7 +21,7 @@ module Comfy
       options = OpenStruct.new
 
       opt_parser = OptionParser.new do |opts|
-        opts.banner = 'Usage of COMFY tool: comfy.rb [options] DISTRIBUTION'
+        opts.banner = 'Usage of COMFY tool: comfy [options] DISTRIBUTION'
         opts.separator ''
 
         opts.on('-v', '--version VERSION', 'Version of distribution to build. '\
@@ -42,34 +42,13 @@ module Comfy
         end
 
         opts.on('-l', '--list', 'Lists all the available distributions and their versions') do
-          distributions = Dir.entries(DIR).select { |entry| entry != '.' && entry != '..' && File.directory?("#{DIR}/#{entry}") }
-          versions = []
-          distributions.each do |distribution|
-            description = File.read("#{DIR}/#{distribution}/#{distribution}.description")
-            json = JSON.parse(description)
-            name = json['name']
-            json['versions'].each do |version|
-              name_version = "#{name} #{version['major_version']}.#{version['minor_version']}"
-              name_version << ".#{version['patch_version']}" if version['patch_version']
-              versions << name_version
-            end
-          end
-
-          versions.sort!
-          versions.each { |version| puts version}
+          list_distributions
           exit
         end
 
         opts.on('--export DESTINATION', 'Exports files for building virtual machines to directory DESTINATION. '\
                 'Helps with the customization of the build process.') do |dir|
-          unless File.exists?(dir) && File.directory?(dir)
-            FileUtils.mkdir_p dir
-          end
-
-          FileUtils.cp_r "#{DIR}/.", dir
-          puts 'Template files copied successfully.'
-          puts "In order to use the new template directory change setting 'vm_templates_dir' in your configuration file to:"
-          puts "vm_templates_dir: #{dir}"
+          copy_templates(dir)
           exit
         end
 
@@ -110,6 +89,35 @@ module Comfy
       check_settings_restrictions
 
       options
+    end
+
+    def self.list_distributions
+      distributions = Dir.entries(DIR).select { |entry| entry != '.' && entry != '..' && File.directory?("#{DIR}/#{entry}") }
+      versions = []
+      distributions.each do |distribution|
+        description = File.read("#{DIR}/#{distribution}/#{distribution}.description")
+        json = JSON.parse(description)
+        name = json['name']
+        json['versions'].each do |version|
+          name_version = "#{name} #{version['major_version']}.#{version['minor_version']}"
+          name_version << ".#{version['patch_version']}" if version['patch_version']
+          versions << name_version
+        end
+      end
+
+      versions.sort!
+      versions.each { |version| puts version}
+    end
+
+    def self.copy_templates(dir)
+      unless File.exists?(dir) && File.directory?(dir)
+        FileUtils.mkdir_p dir
+      end
+
+      FileUtils.cp_r "#{DIR}/.", dir
+      puts 'Template files copied successfully.'
+      puts "In order to use the new template directory change setting 'vm_templates_dir' in your configuration file to:"
+      puts "vm_templates_dir: #{dir}"
     end
 
     # Set default values for not specified options
