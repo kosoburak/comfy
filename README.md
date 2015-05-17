@@ -9,6 +9,9 @@ COMFY is a tool for building virtual machine images from scratch and their uploa
 ##Requirements
 * Ruby >= 1.9.3
 * Rubygems
+* [Packer](https://www.packer.io/) (used for the image creation process)
+* VirtualBox (if you want to create `ova` images)
+* QEMU/KVM (if you want to create `qcow2` images)
 
 ## Installation
 **Unfortunately, neither gem nor packages are available for COMFY right now. To try COMFY, please use the [From source](#from-source-dev) guide below.**
