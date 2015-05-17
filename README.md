@@ -52,14 +52,14 @@ $ comfy -h
 
 Usage of COMFY tool: comfy [options] DISTRIBUTION
 
-    -v, --version VERSION                      Version of distribution to build. Defaults to the newest version.
+    -V, --distribution-version VERSION         Version of distribution to build. Defaults to the newest version.
     -f, --formats FORMAT1[,FORMAT2,...]        Select the output format of the virtual machine image (qemu - qcow2, virtualbox - ova). Defaults to qemu.
     -s, --size NUMBER                          Specify disk size for created virtual machines (in MB). Defaults to 5000MB (5GB)
     -l, --list                                 Lists all the available distributions and their versions
         --export DESTINATION                   Exports files for building virtual machines to directory DESTINATION. Helps with the customization of the build process.
         --[no-]debug                           Run in debug mode
     -h, --help                                 Shows this message
-    -V                                         Shows version of COMFY
+    -v, --version                              Shows version of COMFY
 ```
 COMFY currently supports building of these distributions:
 * CentOS 7.1.1503

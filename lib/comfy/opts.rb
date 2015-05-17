@@ -24,7 +24,7 @@ module Comfy
         opts.banner = 'Usage of COMFY tool: comfy [options] DISTRIBUTION'
         opts.separator ''
 
-        opts.on('-v', '--version VERSION', 'Version of distribution to build. '\
+        opts.on('-V', '--distribution-version VERSION', 'Version of distribution to build. '\
                 'Defaults to the newest version.') do |version|
           options.version = version
         end
@@ -61,7 +61,7 @@ module Comfy
           exit
         end
 
-        opts.on_tail('-V', 'Shows version of COMFY') do
+        opts.on_tail('-v', '--version', 'Shows version of COMFY') do
           puts Comfy::VERSION
           exit
         end
