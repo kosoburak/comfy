@@ -1,12 +1,12 @@
 ---
 defaults: &defaults
-  output:
-    output_dir: /opt/comfy/virtualmachines/
-  packer_cache_dir: /opt/comfy/packer_cache/
+  output_dir: /opt/comfy/virtualmachines/ # Directory to which COMFY will produce virtual machine files
+  packer_cache_dir: /opt/comfy/packer_cache/ # Directory for packer's cache e.g. distribution installation images
+  #vm_templates_dir: /opt/comfy/templates/ # When used COMFY uses templates from this directory to create virtual machines
   logging:
     log_level: ERROR
-    #log_type: file # Two options: file, syslog. Defaults to stdout
-    comfy_log_file: /var/log/comfy/comfy.log # Used when type file selected
+    log_type: file # Two options: file, syslog. Defaults to stdout
+    log_file: /var/log/comfy/comfy.log # File to write log to, used when type file selected
 
 ########!!!!!!!DO NOT EDIT AFTER THIS POINT!!!!!!##########
 
@@ -15,4 +15,3 @@ production:
 
 development:
   <<: *defaults
-
