@@ -30,10 +30,11 @@ start ttyS0
 # fail2ban
 mv /root/iptables-multiport.local /etc/fail2ban/action.d/iptables-multiport.local
 mv /root/jail.local /etc/fail2ban/jail.local
-mv /root/fail2ban.local /ect/fail2ban/fail2ban.local
+mv /root/fail2ban.local /etc/fail2ban/fail2ban.local
 
 # pakiti-2-client
 dpkg -i pakiti_2.1.5-2_all.deb
+rm -f pakiti_2.1.5-2_all.deb
 
 ln -s /dev/null /etc/udev/rules.d/75-persistent-net-generator.rules
 

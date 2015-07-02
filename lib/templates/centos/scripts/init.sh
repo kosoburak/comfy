@@ -34,10 +34,11 @@ mv /root/ntp.conf /etc/ntp.conf
 # fail2ban
 mv /root/iptables-multiport.local /etc/fail2ban/action.d/iptables-multiport.local
 mv /root/jail.local /etc/fail2ban/jail.local
-mv /root/fail2ban.local /ect/fail2ban/fail2ban.local
+mv /root/fail2ban.local /etc/fail2ban/fail2ban.local
 
 # pakiti-2-client
 rpm -i pakiti-2.1.5-1.noarch.rpm
+rm -f pakiti-2.1.5-1.noarch.rpm
 
 # remove hardware address (MAC) and UUID from NIC configuration files
 sed -i '/^HWADDR/d' /etc/sysconfig/network-scripts/ifcfg-eth*
