@@ -3,7 +3,7 @@ GRUB_DISTRIBUTOR="$(sed 's, release .*$,,g' /etc/system-release)"
 GRUB_DEFAULT=saved
 GRUB_DISABLE_SUBMENU=true
 GRUB_TERMINAL_OUTPUT="console"
-GRUB_CMDLINE_LINUX="vconsole.keymap=us crashkernel=auto  vconsole.font=latarcyrheb-sun16 rhgb quiet console=ttys0,115200n8 console=tty0"
+GRUB_CMDLINE_LINUX="vconsole.keymap=us crashkernel=auto  vconsole.font=latarcyrheb-sun16 rhgb quiet net.ifnames=0 biosdevname=0 console=ttys0,115200n8 console=tty0"
 #GRUB_CMDLINE_LINUX="console=ttys0,115200n8 console=tty0"
 GRUB_DISABLE_RECOVERY="true"
 GRUB_TERMINAL="serial"

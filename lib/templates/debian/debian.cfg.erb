@@ -1,6 +1,6 @@
-#Contents of the preconfiguration file (for squeeze)
-### Localization
-# Preseeding only locale sets language, country and locale.
+#Contents of the preconfiguration file (for wheezy)
+
+# Localization and language
 d-i debian-installer/locale string en_US
 
 # Keyboard
@@ -9,12 +9,9 @@ d-i keyboard-configuration/xkb-keymap select us
 
 # Network
 d-i netcfg/choose_interface select auto
-
 d-i netcfg/get_hostname string debian
-d-i netcfg/get_domain string sigxcpu.org
-
+d-i netcfg/get_domain string cesnet.cz
 d-i netcfg/wireless_wep string
-
 d-i hw-detect/load_firmware boolean true
 
 #Mirror
@@ -23,6 +20,11 @@ d-i mirror/http/hostname string ftp.debian.org
 d-i mirror/http/directory string /debian
 d-i mirror/http/proxy string
 
+# Clock and time zone
+d-i clock-setup/utc boolean true
+d-i time/zone string Europe/Prague
+d-i clock-setup/ntp boolean true
+
 # Account
 d-i passwd/make-user boolean false
 
@@ -30,12 +32,7 @@ d-i passwd/make-user boolean false
 d-i passwd/root-password password <%= @data[:password] %>
 d-i passwd/root-password-again password <%= @data[:password] %>
 
-# Clock and time zone
-d-i clock-setup/utc boolean true
-d-i time/zone string Europe/Prague
-d-i clock-setup/ntp boolean true
-
-# Partition setting
+# Partition
 d-i partman-md/device_remove_md boolean true
 d-i partman-lvm/device_remove_lvm boolean true
     
@@ -59,27 +56,25 @@ d-i partman-basicfilesystems/no_swap boolean false
 d-i partman-basicfilesystems/no_swap seen true 
 d-i partman/mount_style select uuid
 
-
+# Grub
 d-i grub-installer/only_debian boolean true
-
-# The kernel image (meta) package to be installed; "none" can be used if no
-# kernel is to be installed.
-#d-i base-installer/kernel/image string linux-image-2.6-486
+d-i grub-installer/with_other_os boolean true
+d-i grub-installer/bootdev string /dev/vda
 
 # Apt setup
 d-i apt-setup/non-free boolean true
 d-i apt-setup/contrib boolean true
 
-### Package selection
+# Package selection
 tasksel tasksel/first multiselect none
-
 d-i pkgsel/include string openssh-server build-essential
 #d-i pkgsel/include string openssh-server git-buildpackage
 
-### Late install
-d-i preseed/late_command in-target echo "blacklist ipv6" >> /etc/modprobe.d/blacklist.conf
+# SSH hack to allow root login
+d-i preseed/late_command string in-target sed -i "s/PermitRootLogin without-password/PermitRootLogin yes/" /etc/ssh/sshd_config; \
+in-target echo "blacklist ipv6" >> /etc/modprobe.d/blacklist.conf
 
 popularity-contest popularity-contest/participate boolean false
-### Finishing up the installation
+# Finishing up the installation
 d-i finish-install/reboot_in_progress note<span style="font-family: Georgia, 'Times New Roman', 'Bitstream Charter', Times, serif; font-size: 13px; line-height: 19px; white-space: normal;" class="Apple-style-span"> </span>
 

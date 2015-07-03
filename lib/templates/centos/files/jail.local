@@ -1,0 +1,17 @@
+[DEFAULT]
+
+# Seznam vygenerovany skriptem /software/meta-admin/scripts/get_nodes_ips
+# Vygeneruje pouze C site, tzn. je tam o nekolik set hostu vic nez ve skutecnosti
+
+ignoreip = 127.0.0.1 147.228.1.0/24 147.251.17.0/24 147.228.240.0/24 147.228.241.0/24 147.231.11.0/24 147.231.18.0/24 147.251.11.0/24 147.251.252.0/24 147.251.254.0/24 147.251.3.0/24 147.251.84.0/24 147.251.9.0/24 195.113.0.0/24 195.113.123.0/24 195.113.209.0/24 195.113.214.0/24 78.128.210.0/24
+
+[ssh]
+
+enabled = true
+port    = ssh
+filter  = sshd
+logpath  = /var/log/auth.log
+maxretry = 100
+findtime = 86400
+bantime  = 1209600
+

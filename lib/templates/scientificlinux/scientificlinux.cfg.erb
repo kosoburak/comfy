@@ -16,7 +16,7 @@ url --url=http://mirror.karneval.cz/pub/linux/scientific/<%= @data[:distro][:ver
 bootloader --location=mbr
 zerombr
 clearpart --all --initlabel
-part  / --size=1  --grow
+part / --size=1 --grow
 ## Firstboot - the druid that helps you to set up the system after install - disabled
 firstboot --disabled
 ## Don't use GUI

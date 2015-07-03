@@ -67,6 +67,7 @@ Usage of COMFY tool: comfy [options] DISTRIBUTION
 COMFY currently supports building of these distributions:
 * CentOS 7.1.1503
 * Debian 7.8.0
+* Debian 8.1.0
 * ScientificLinux 7.1
 * Ubuntu 12.04
 * Ubuntu 14.04
@@ -78,7 +79,7 @@ $ comfy ubuntu
 ```
 When not specified, COMFY will build the newest version of selected distribution. If you want to select a specific version run:
 ```bash
-$ comfy -v 12.04 ubuntu
+$ comfy -V 12.04 ubuntu
 ```
 COMFY uses by default a QEMU supervisor for image creation. If you want to use VirtualBox you can do it with:
 ```bash

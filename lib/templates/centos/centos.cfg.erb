@@ -1,26 +1,44 @@
+### Kickstart
+## Fresh install, not an upgrade
 install
 url --url=http://mirror.nextlayer.at/centos/<%= @data[:distro][:version]['major_version'] %>.<%= @data[:distro][:version]['minor_version'] %>.<%= @data[:distro][:version]['patch_version'] %>/os/x86_64/
 lang en_US.UTF-8
 keyboard us
-network --device=eth0 --bootproto dhcp --onboot=yes --noipv6
-network --device=eth1 --bootproto dhcp --onboot=yes --noipv6
-rootpw <%= @data[:password] %>
-firewall --enabled --service=ssh
-authconfig --enableshadow --passalgo=sha512
-selinux --disabled
 timezone UTC
+## Disk Partitioning - how the boot loader should be installed, delete all partitions/mbr, then create
 bootloader --location=mbr
-text
-skipx
 zerombr
 clearpart --all --initlabel
 part  / --size=1  --grow --fstype ext4
-auth --useshadow --enablemd5
+## Don't use GUI
+text
+## Don't configure X
+skipx
+## Firstboot - the druid that helps you to set up the system after install - disabled
 firstboot --disabled
+## Authentication
+## Sets up the authentication options - use shadow passwords, encryption for user passwords
+authconfig --enableshadow --passalgo=sha512
+auth --useshadow --enablemd5
+## Sets the system's root password
+rootpw <%= @data[:password] %>
+## Configure NICs - use dhcp - disable IPv6
+network --device=eth0 --bootproto dhcp --onboot=yes --noipv6
+network --device=eth1 --bootproto dhcp --onboot=yes --noipv6
+## Firewall - enable and open ssh port
+firewall --enabled --service=ssh
+## Selinux - disable
+selinux --disabled
+## Reboot the machine after the install
 reboot
 %packages --nobase
+## Add basic packages groups
 @core
+## Add basic packages
+wget
+curl
 bzip2
+## Add extra packages
 openssh-clients
 openssh-server
 %end

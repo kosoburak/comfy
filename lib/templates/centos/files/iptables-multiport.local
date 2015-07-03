@@ -1,0 +1,6 @@
+[Definition]
+
+actionban = iptables -I fail2ban-<name> 1 -s <ip> -j REJECT
+
+actionunban = iptables -D fail2ban-<name> -s <ip> -j REJECT
+
