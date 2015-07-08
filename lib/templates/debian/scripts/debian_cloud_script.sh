@@ -7,6 +7,7 @@
 mv /root/cerit-cloudinit.list /etc/apt/sources.list.d/cerit-cloudinit.list
 apt-key add /root/RPM-GPG-KEY-CERIT-SC.cfg
 rm -f /root/RPM-GPG-KEY-CERIT-SC.cfg
+mv /root/backports.list /etc/apt/sources.list.d/backports.list
 
 apt-get update
 apt-get --assume-yes upgrade
@@ -33,6 +34,7 @@ else
   systemctl enable cloud-config
   systemctl enable cloud-final
   rm /etc/cloud/cloud.cfg.d/90_dpkg.cfg
+  rm /etc/apt/sources.list.d/backports.list
   mv /root/getty\@ttyS0.service /etc/systemd/system/getty.target.wants/getty@ttyS0.service
   ln -s /etc/systemd/system/getty\@ttyS0.service /etc/systemd/system/getty.target.wants/getty@ttyS0.service
 fi

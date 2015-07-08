@@ -64,6 +64,9 @@ chkconfig network on
 # disable NetworkManager
 systemctl disable NetworkManager
 
+#remove chrony to enable NTP service
+rpm -e chrony
+
 # allow to use sudo via ssh
 chmod u+w /etc/sudoers
 sed -i s/'Defaults    requiretty'/'#Defaults    requiretty'/g /etc/sudoers
