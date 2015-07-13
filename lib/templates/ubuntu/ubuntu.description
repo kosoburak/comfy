@@ -7,13 +7,6 @@
       "name": "Trusty Tahr",
       "iso_url": "http://archive.ubuntu.com/ubuntu/dists/trusty/main/installer-amd64/current/images/netboot/mini.iso",
       "iso_checksum": "bc09966b54f91f62c3c41fc14b76f2baa4cce48595ce22e8c9f24ab21ac8d965"
-    },{
-      "major_version": "12",
-      "minor_version": "04",
-      "codename": "precise",
-      "name": "Precise Pangolin",
-      "iso_url": "http://archive.ubuntu.com/ubuntu/dists/precise/main/installer-amd64/current/images/netboot/mini.iso",
-      "iso_checksum": "7df121f07878909646c8f7862065ed7182126b95eadbf5e1abb115449cfba714"
     }],
   "boot_command": " install auto=true priority=critical preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}",
   "qemu": {
