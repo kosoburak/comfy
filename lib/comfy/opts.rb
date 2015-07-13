@@ -46,23 +46,31 @@ module Comfy
           exit
         end
 
+        opts.on('-h', '--help', 'Shows this message') do
+          puts opts
+          exit
+        end
+
+        opts.on('-v', '--version', 'Shows version of COMFY') do
+          puts Comfy::VERSION
+          exit
+        end
+
+        opts.separator ''
+        opts.separator 'Advanced options:'
+
+        opts.on('--[no-]debug', 'Run in debug mode') do |flag|
+          options.debug = flag
+        end
+
         opts.on('--export DESTINATION', 'Exports files for building virtual machines to directory DESTINATION. '\
                 'Helps with the customization of the build process.') do |dir|
           copy_templates(dir)
           exit
         end
 
-        opts.on('--[no-]debug', 'Run in debug mode') do |flag|
-          options.debug = flag
-        end
-
-        opts.on_tail('-h', '--help', 'Shows this message') do
-          puts opts
-          exit
-        end
-
-        opts.on_tail('-v', '--version', 'Shows version of COMFY') do
-          puts Comfy::VERSION
+        opts.on('--clean-cache', 'Cleans packer\'s cache containing distributions\' installation media.') do
+          clean_cache
           exit
         end
       end
@@ -118,6 +126,13 @@ module Comfy
       puts 'Template files copied successfully.'
       puts "In order to use the new template directory change setting 'vm_templates_dir' in your configuration file to:"
       puts "vm_templates_dir: #{dir}"
+    end
+
+    def self.clean_cache
+      check_settings_restrictions
+      directory = Settings['packer_cache_dir']
+      Dir.entries(directory).each { |entry| File.delete("#{directory}/#{entry}") unless entry == '.' || entry == '..' }
+      puts 'Cache cleaned successfully.'
     end
 
     # Set default values for not specified options
