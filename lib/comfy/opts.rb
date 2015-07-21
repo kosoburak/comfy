@@ -114,13 +114,11 @@ module Comfy
       end
 
       versions.sort!
-      versions.each { |version| puts version}
+      versions.each { |version| puts version }
     end
 
     def self.copy_templates(dir)
-      unless File.exists?(dir) && File.directory?(dir)
-        FileUtils.mkdir_p dir
-      end
+      FileUtils.mkdir_p dir unless File.exist?(dir) && File.directory?(dir)
 
       FileUtils.cp_r "#{DIR}/.", dir
       puts 'Template files copied successfully.'
@@ -148,7 +146,7 @@ module Comfy
     def self.check_files(options)
       packer_file = "#{DIR}/packer.erb"
 
-      unless File.exists?(packer_file)
+      unless File.exist?(packer_file)
         fail ArgumentError, 'Missing packer configuration file.'
       end
 
@@ -156,17 +154,15 @@ module Comfy
       distro_cfg = "#{distro_dir}/#{options.distribution}.cfg.erb"
       distro_description = "#{distro_dir}/#{options.distribution}.description"
 
-      unless File.exists?(distro_dir) && File.exists?(distro_cfg) && File.exists?(distro_description)
+      unless File.exist?(distro_dir) && File.exist?(distro_cfg) && File.exist?(distro_description)
         fail ArgumentError, "Missing some configuration files for selected distribution #{options.distribution}."
       end
     end
 
     def self.check_options_restrictions(options)
-      if options.size <= 0
-        fail ArgumentError, 'Disk size cannot be 0 or less.'
-      end
+      fail ArgumentError, 'Disk size cannot be 0 or less.' if options.size <= 0
 
-      options.formats = options.formats.map { |format| format.to_sym}
+      options.formats = options.formats.map(&:to_sym)
       if (FORMATS & options.formats).empty?
         fail ArgumentError, 'Unknown output format.'
       end

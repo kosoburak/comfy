@@ -7,7 +7,6 @@ require 'tmpdir'
 
 module Comfy
   class Templater
-
     def initialize(data, logger)
       @data = data
       @logger = logger

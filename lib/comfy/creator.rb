@@ -6,7 +6,6 @@ require 'json'
 
 module Comfy
   class Creator
-
     def initialize(options, logger)
       @options = options
       @logger = logger
@@ -39,7 +38,7 @@ module Comfy
         exit(2)
       end
 
-      packer = Mixlib::ShellOut.new("packer build -parallel=false #{packer_file}", :timeout => 5400)
+      packer = Mixlib::ShellOut.new("packer build -parallel=false #{packer_file}", timeout: 5400)
       packer.live_stream = @logger
       packer.run_command
 
@@ -73,9 +72,7 @@ module Comfy
       available_versions = @options[:distro]['versions']
       available_versions.sort_by! { |e| [e['major_version'], e['minor_version'], e['patch_version']] }.reverse!
 
-      if version == :newest
-        return available_versions.first
-      end
+      return available_versions.first if version == :newest
 
       version_parts = version.split('.')
       if version_parts.size > 3
@@ -102,9 +99,9 @@ module Comfy
       selected.sort.reverse.first
     end
 
-    def clean(server_dir)
+    def clean(_server_dir)
       @logger.debug('Cleaning temporary directory...')
-      #FileUtils.remove_dir(server_dir)
+      # FileUtils.remove_dir(server_dir)
     end
 
     def get_group(template_dir, distro, group_name)
@@ -120,9 +117,8 @@ module Comfy
     end
 
     def password
-      o = [('a'..'z'), ('A'..'Z')].map { |i| i.to_a }.flatten
+      o = [('a'..'z'), ('A'..'Z')].map(&:to_a).flatten
       (0...100).map { o[rand(o.length)] }.join
     end
   end
 end
-

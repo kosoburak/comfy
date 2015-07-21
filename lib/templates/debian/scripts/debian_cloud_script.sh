@@ -47,6 +47,7 @@ mv /root/interfaces /etc/network/interfaces
 mv /root/10-ipv6.conf /etc/sysctl.d/10-ipv6.conf
 mv /root/grub /etc/default/grub
 mv /root/inittab /etc/inittab
+mv /root/modules /etc/initramfs-tools/modules
 
 # fail2ban
 mv /root/iptables-multiport.local /etc/fail2ban/action.d/iptables-multiport.local
@@ -60,6 +61,8 @@ rm -f pakiti_2.1.5-2_all.deb
 update-grub
 
 ln -s /dev/null /etc/udev/rules.d/75-persistent-net-generator.rules
+
+update-initramfs -v -u -k `uname -r`
 
 passwd -d root
 

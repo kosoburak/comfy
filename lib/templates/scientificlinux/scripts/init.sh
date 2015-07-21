@@ -31,6 +31,7 @@ mv /root/getty\@ttyS0.service /etc/systemd/system/getty\@ttyS0.service
 grub2-mkconfig -o /boot/grub2/grub.cfg
 ln -s /etc/systemd/system/getty\@ttyS0.service /etc/systemd/system/getty.target.wants/getty@ttyS0.service
 mv /root/ntp.conf /etc/ntp.conf
+mv /root/xen-domU.conf /etc/dracut.conf.d/xen-domU.conf
 
 # fail2ban
 mv /root/iptables-multiport.local /etc/fail2ban/action.d/iptables-multiport.local
@@ -71,6 +72,9 @@ rpm -e chrony
 chmod u+w /etc/sudoers
 sed -i s/'Defaults    requiretty'/'#Defaults    requiretty'/g /etc/sudoers
 chmod -w /etc/sudoers
+
+#regenerate initrd files
+dracut -f
 
 # disable root login with password
 passwd -d root

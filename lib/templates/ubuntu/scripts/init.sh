@@ -17,6 +17,7 @@ mv /root/interfaces /etc/network/interfaces
 mv /root/10-ipv6.conf /etc/sysctl.d/10-ipv6.conf
 mv /root/ttyS0.conf /etc/init/ttyS0.conf
 mv /root/grub /etc/default/grub
+mv /root/modules /etc/initramfs-tools/modules
 
 update-grub
 start ttyS0
@@ -31,6 +32,8 @@ dpkg -i pakiti_2.1.5-2_all.deb
 rm -f pakiti_2.1.5-2_all.deb
 
 ln -s /dev/null /etc/udev/rules.d/75-persistent-net-generator.rules
+
+update-initramfs -v -u -k `uname -r`
 
 passwd -d root
 
