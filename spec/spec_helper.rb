@@ -1,7 +1,9 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+require 'simplecov'
 
-#require 'simplecov'
-#SimpleCov.start
+SimpleCov.start do
+  add_filter "/vendor"
+end
 
 ENV['RAILS_ENV'] = 'test'
 
