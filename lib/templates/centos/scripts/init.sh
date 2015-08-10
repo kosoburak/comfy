@@ -45,6 +45,8 @@ rm -f pakiti-2.1.5-1.noarch.rpm
 yum -y install check-mk-agent
 rpm -i check-mk-agent-meta-key-1.0-1.noarch.rpm
 rpm -i check-mk-agent-meta-checks-2.0-1.noarch.rpm
+rm -f check-mk-agent-meta-key-1.0-1.noarch.rpm
+rm -f check-mk-agent-meta-checks-2.0-1.noarch.rpm
 
 # remove hardware address (MAC) and UUID from NIC configuration files
 sed -i '/^HWADDR/d' /etc/sysconfig/network-scripts/ifcfg-eth*
