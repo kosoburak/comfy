@@ -21,7 +21,6 @@ mv /root/10-ipv6.conf /etc/sysctl.d/10-ipv6.conf
 mv /root/ttyS0.conf /etc/init/ttyS0.conf
 mv /root/grub /etc/default/grub
 mv /root/modules /etc/initramfs-tools/modules
-mv /root/
 
 update-grub
 start ttyS0
@@ -32,6 +31,9 @@ mv /root/jail.local /etc/fail2ban/jail.local
 mv /root/fail2ban.local /etc/fail2ban/fail2ban.local
 
 # check-mk-agent
+# mkdir /etc/check_mk
+# touch /etc/check_mk/fileinfo.cfg
+
 apt-get --assume-yes install check-mk-agent check-mk-agent-meta-key
 apt-get --assume-yes install check-mk-agent-meta-checks
 

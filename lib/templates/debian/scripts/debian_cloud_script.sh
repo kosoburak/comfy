@@ -8,7 +8,7 @@ mv /root/cerit-cloudinit.list /etc/apt/sources.list.d/cerit-cloudinit.list
 apt-key add /root/RPM-GPG-KEY-CERIT-SC.cfg
 rm -f /root/RPM-GPG-KEY-CERIT-SC.cfg
 mv /root/backports.list /etc/apt/sources.list.d/backports.list
-mv /root/meta-misc.list /etc/apt/source.list.d/meta-misc.list
+mv /root/meta-misc.list /etc/apt/sources.list.d/meta-misc.list
 
 apt-get update
 apt-get --assume-yes upgrade
@@ -60,6 +60,9 @@ dpkg -i pakiti_2.1.5-2_all.deb
 rm -f pakiti_2.1.5-2_all.deb
 
 # check-mk-agent
+# mkdir /etc/check_mk
+# touch /etc/check_mk/fileinfo.cfg
+
 apt-get --assume-yes install check-mk-agent check-mk-agent-meta-key
 apt-get --assume-yes install check-mk-agent-meta-checks
 
