@@ -48,6 +48,7 @@ rpm -i check-mk-agent-meta-key-1.0-1.noarch.rpm
 rpm -i check-mk-agent-meta-checks-2.0-1.noarch.rpm
 rm -f check-mk-agent-meta-key-1.0-1.noarch.rpm
 rm -f check-mk-agent-meta-checks-2.0-1.noarch.rpm
+sed -i s/"disable\s*= no"/'disable       = yes'/g /etc/xinetd.d/check-mk-agent
 
 # remove hardware address (MAC) and UUID from NIC configuration files
 sed -i '/^HWADDR/d' /etc/sysconfig/network-scripts/ifcfg-eth*
