@@ -15,3 +15,11 @@ production:
 
 development:
   <<: *defaults
+
+test:
+  output_dir: <placeholder>
+  packer_cache_dir: <placeholder>
+  logging:
+    log_level: <placeholder>
+    log_type: <placeholder>
+    log_file: <placeholder>

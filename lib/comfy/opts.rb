@@ -13,6 +13,8 @@ module Comfy
     FORMAT_DEFAULT = FORMATS.first
     SIZE_DEFAULT = 5000
     DEBUG_DEFAULT = false
+    PACKER_FILE = "#{DIR}/packer.erb"
+
 
     # Return a structure with options
     def self.parse(args, logger)
@@ -144,18 +146,36 @@ module Comfy
 
     # Make sure we have templates
     def self.check_files(options)
-      packer_file = "#{DIR}/packer.erb"
-
-      unless File.exist?(packer_file)
+      unless File.exist?(PACKER_FILE)
         fail ArgumentError, 'Missing packer configuration file.'
       end
 
+      distro = "#{options.distribution}"
       distro_dir = "#{DIR}/#{options.distribution}"
       distro_cfg = "#{distro_dir}/#{options.distribution}.cfg.erb"
       distro_description = "#{distro_dir}/#{options.distribution}.description"
 
-      unless File.exist?(distro_dir) && File.exist?(distro_cfg) && File.exist?(distro_description)
-        fail ArgumentError, "Missing some configuration files for selected distribution #{options.distribution}."
+      check_distro_dir(distro_dir, distro)
+      check_distro_cfg(distro_cfg, distro)
+      check_distro_description(distro_description, distro)
+
+    end
+
+    def self.check_distro_dir(distro_dir, distro)
+      unless File.exist?(distro_dir)
+        fail ArgumentError, "Missing directory for selected distribution - #{distro}."
+      end
+    end
+
+    def self.check_distro_cfg(distro_cfg, distro)
+      unless File.exist?(distro_cfg)
+        fail ArgumentError, "Missing configuration file for selected distribution - #{distro}."
+      end
+    end
+
+    def self.check_distro_description(distro_description, distro)
+      unless File.exist?(distro_description)
+        fail ArgumentError, "Missing description file for selected distribution - #{distro}."
       end
     end
 

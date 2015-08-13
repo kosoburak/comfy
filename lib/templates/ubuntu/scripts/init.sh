@@ -3,6 +3,9 @@
 apt-get update
 
 apt-get --assume-yes install qemu-guest-agent
+apt-key add /root/RPM-GPG-KEY-CERIT-SC.cfg
+rm -f /root/RPM-GPG-KEY-CERIT-SC.cfg
+mv /root/meta-misc.list /etc/apt/sources.list.d/meta-misc.list
 apt-get update
 apt-get --assume-yes upgrade
 apt-get --assume-yes install cloud-init
@@ -26,6 +29,13 @@ start ttyS0
 mv /root/iptables-multiport.local /etc/fail2ban/action.d/iptables-multiport.local
 mv /root/jail.local /etc/fail2ban/jail.local
 mv /root/fail2ban.local /etc/fail2ban/fail2ban.local
+
+# check-mk-agent
+# mkdir /etc/check_mk
+# touch /etc/check_mk/fileinfo.cfg
+
+apt-get --assume-yes install check-mk-agent check-mk-agent-meta-key
+apt-get --assume-yes install check-mk-agent-meta-checks
 
 # pakiti-2-client
 dpkg -i pakiti_2.1.5-2_all.deb
