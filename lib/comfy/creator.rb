@@ -99,9 +99,9 @@ module Comfy
       selected.sort.reverse.first
     end
 
-    def clean(_server_dir)
+    def clean(server_dir)
       @logger.debug('Cleaning temporary directory...')
-      # FileUtils.remove_dir(server_dir)
+      FileUtils.remove_dir(server_dir)
     end
 
     def get_group(template_dir, distro, group_name)
