@@ -107,7 +107,7 @@ module Comfy
       distributions.each do |distribution|
         description_file = "#{DIR}/#{distribution}/#{distribution}.description"
         # TODO prepared for json schema implementation
-        # unless JSON::Validator.validate(description_SCHEMA_FILE, description_file)
+        # unless JSON::Validator.validate(DESCRIPTION_SCHEMA_FILE, description_file)
         unless true
           puts "Invalid schema for distribution #{distribution}, skipping."
           next

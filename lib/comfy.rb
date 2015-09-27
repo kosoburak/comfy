@@ -1,6 +1,6 @@
 module Comfy
   GEM_DIR = File.realdirpath(File.join(File.dirname(__FILE__), '..'))
-  DESCRIPTOR_SCHEMA_FILE = File.join(GEM_DIR, 'schema', 'distribution_descriptor.schema')
+  DESCRIPTION_SCHEMA_FILE = File.join(GEM_DIR, 'schema', 'distribution_descriptor.schema')
 
   # exit codes
   DEFAULT_EXIT_CODE = 0

@@ -48,6 +48,8 @@ class Comfy::Creator
 
   def prepare_data
     description_file = "#{data[:template_dir]}/#{data[:distribution]}/#{data[:distribution]}.description"
+    # TODO prepared for json schema implementation
+    # JSON::Validator.validate!(DESCRIPTION_SCHEMA_FILE, description_file)
 
     description = File.read(description_file)
     data[:distro] = JSON.parse(description)
