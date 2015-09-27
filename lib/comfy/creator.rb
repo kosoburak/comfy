@@ -58,8 +58,8 @@ class Comfy::Creator
     data[:distro][:version] = choose_version
 
     data[:provisioners] = {}
-    data[:provisioners][:scripts] = get_group(template_dir, distribution, 'scripts')
-    data[:provisioners][:files] = get_group(template_dir, distribution, 'files')
+    data[:provisioners][:scripts] = Dir.glob(File.join(data[:template_dir], data[:distribution], 'scripts', '*'))
+    data[:provisioners][:files] = Dir.glob(File.join(data[:template_dir], data[:distribution], 'files', '*'))
 
     data[:password] = password
     logger.debug("Temporary password: '#{data[:password]}'")
@@ -103,18 +103,6 @@ class Comfy::Creator
       logger.debug("Cleaning temporary directory #{data[:server_dir]}.")
       FileUtils.remove_dir(data[:server_dir])
     end
-  end
-
-  def get_group(template_dir, distro, group_name)
-    group = []
-    group_dir_path = "#{template_dir}/#{distro}/#{group_name}"
-    return group unless Dir.exist? group_dir_path
-    group_dir = Dir.new(group_dir_path)
-    group_dir.entries.select { |entry| entry != '.' && entry != '..' }.each do |file|
-      group << "#{group_dir.path}/#{file}"
-    end
-
-    group
   end
 
   def password
