@@ -56,13 +56,19 @@ begin
   creator.create
 rescue Comfy::Errors::PackerExecutionError
   logger.error($!.message)
-  exit(PACKER_EXECUTION_ERROR_EXIT_CODE)
+  exit(Comfy::PACKER_EXECUTION_ERROR_EXIT_CODE)
 rescue Comfy::Errors::PackerValidationError
   logger.error($!.message)
-  exit(PACKER_VALIDATION_ERROR_EXIT_CODE)
+  exit(Comfy::PACKER_VALIDATION_ERROR_EXIT_CODE)
+rescue Comfy::Errors::InvalidDistributionVersionError
+  logger.error($!.message)
+  exit(Comfy::INVALID_DISTRIBUTION_VERSION_ERROR_EXIT_CODE)
+rescue Comfy::Errors::NoSuchDistributionVersionError
+  logger.error($!.message)
+  exit(Comfy::NO_SUCH_DISTRIBUTION_VERSION_ERROR_EXIT_CODE)
 rescue JSON::Schema::ValidationError
   logger.error($!.message)
-  exit(JSON_SCHEMA_VALIDATION_ERROR_EXIT_CODE)
+  exit(Comfy::JSON_SCHEMA_VALIDATION_ERROR_EXIT_CODE)
 ensure
   creator.clean()
 end

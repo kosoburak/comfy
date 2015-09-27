@@ -56,6 +56,7 @@ class Comfy::Creator
     logger.debug("Data from description file: #{data[:distro]}")
 
     data[:distro][:version] = choose_version
+    logger.debug("Version selected for build: #{data[:distro][:version]}")
 
     data[:provisioners] = {}
     data[:provisioners][:scripts] = Dir.glob(File.join(data[:template_dir], data[:distribution], 'scripts', '*'))
@@ -68,34 +69,35 @@ class Comfy::Creator
   def choose_version
     version = data[:version]
 
-    available_versions = data[:distro]['versions']
-    available_versions.sort_by! { |e| [e['major_version'], e['minor_version'], e['patch_version']] }.reverse!
+    available_versions = []
+    data[:distro]['versions'].each do |v|
+      available_versions << {:major => v['major_version'].to_i, :minor => v['minor_version'].to_i, :patch => v['patch_version'].to_i, :version => v}
+    end
+    available_versions.sort_by! { |v| [v[:major], v[:minor], v[:patch]] }.reverse!
 
-    return available_versions.first if version == :newest
+    return available_versions.first[:version] if version == :newest
 
     version_parts = version.split('.')
-    if version_parts.size > 3
-      logger.error("No version #{version} available for #{data[:distribution]}")
-      clean(data[:server_dir])
-      exit(3)
+    raise Comfy::Errors::InvalidDistributionVersionError, "Version '#{version}' is not a valid distribution version" if version_parts.size > 3
+
+    version_parts.map! do |part|
+      raise Comfy::Errors::InvalidDistributionVersionError, "Version '#{version}' is not a valid distribution version" unless part =~ /\A\d+\z/
+
+      part.to_i
     end
 
-    selected = available_versions.select { |e| e['major_version'] == version_parts[0] }
+    selected = available_versions.select { |v| v[:major] == version_parts[0] }
     if version_parts.size > 1
-      selected = selected.select { |e| e['minor_version'] == version_parts[1] }
+      selected = selected.select { |v| v[:minor] == version_parts[1] }
 
       if version_parts.size > 2
-        selected = selected.select { |e| e['patch_version'] == version_parts[2] }
+        selected = selected.select { |v| v[:patch] == version_parts[2] }
       end
     end
 
-    if selected.empty?
-      logger.error("No version #{version} available for #{data[:distribution]}")
-      clean(data[:server_dir])
-      exit(3)
-    end
+    raise Comfy::Errors::NoSuchDistributionVersionError, "No version '#{version}' available for distribution '#{data[:distribution]}'" if selected.empty?
 
-    selected.sort.reverse.first
+    selected.sort_by { |v| [v[:major], v[:minor], v[:patch]] }.reverse.first[:version]
   end
 
   def clean
