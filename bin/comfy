@@ -9,7 +9,7 @@ logger = Logger.new(STDOUT)
 
 # make sure log file is specified while logging to file
 if Settings['logging'] && Settings.logging['log_type'] == 'file' &&
-   !Settings.logging['log_file']
+  !Settings.logging['log_file']
   fail ArgumentError, 'Missing file for logging. Check your configuration file.'
 end
 
@@ -20,7 +20,7 @@ if Settings['logging'] && Settings['logging']['log_type'] == 'file'
     logger = Logger.new(log_file)
   rescue => e
     puts "Unable to create log file #{Settings['logging']['log_file']}: #{e.message}.\
-Falling back to STDOUT."
+    Falling back to STDOUT."
   end
 elsif Settings['logging'] && Settings['logging']['log_type'] == 'syslog'
   logger = Syslogger.new('comfy')
@@ -51,5 +51,18 @@ end
 
 logger.debug("Starting Comfy with options: #{opts}.")
 
-creator = Comfy::Creator.new(opts, logger)
-creator.create
+begin
+  creator = Comfy::Creator.new(opts, logger)
+  creator.create
+rescue Comfy::Errors::PackerExecutionError
+  logger.error($!.message)
+  exit(PACKER_EXECUTION_ERROR_EXIT_CODE)
+rescue Comfy::Errors::PackerValidationError
+  logger.error($!.message)
+  exit(PACKER_VALIDATION_ERROR_EXIT_CODE)
+rescue JSON::Schema::ValidationError
+  logger.error($!.message)
+  exit(JSON_SCHEMA_VALIDATION_ERROR_EXIT_CODE)
+ensure
+  creator.clean()
+end

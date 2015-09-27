@@ -83,12 +83,12 @@ module Comfy
           puts 'Missing distribution to build'
           puts
           puts opt_parser
-          exit 1
+          exit OPTION_PARSING_ERROR_EXIT_CODE
         end
         options.distribution = ARGV.pop.downcase
       rescue OptionParser::ParseError => e
         puts e
-        exit 1
+        exit OPTION_PARSING_ERROR_EXIT_CODE
       end
 
       logger.debug("Parsed options: #{options}")
