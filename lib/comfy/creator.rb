@@ -26,7 +26,7 @@ class Comfy::Creator
     templater = Comfy::Templater.new(data, logger)
     templater.prepare_files
 
-    packer_file = "#{data[:server_dir]}/#{data[:distribution]}.json"
+    packer_file = "#{data[:server_dir]}/#{data[:distribution]}.packer"
     run_packer(packer_file)
   end
 

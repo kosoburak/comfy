@@ -5,50 +5,48 @@ require 'erb'
 require 'fileutils'
 require 'tmpdir'
 
-module Comfy
-  class Templater
-    def initialize(data, logger)
-      @data = data
-      @logger = logger
-    end
+class Comfy::Templater
+  attr_reader :logger, :data
 
-    # Prepares *.json and *.cfg files from templates for selected distribution
-    def prepare_files
-      distribution = @data[:distribution]
-      template_dir = @data[:template_dir]
-      server_dir = @data[:server_dir]
+  def initialize(data, logger)
+    @data = data
+    @logger = logger
+  end
 
-      @logger.debug('Creating temporary files...')
-      cfg_tmp = Tempfile.new('comfy_cfg')
-      json_tmp = Tempfile.new('comfy_json')
-      @logger.debug("Temporary files '#{cfg_tmp.path}' and '#{json_tmp.path}' were created.")
+  # Prepares *.json and *.cfg files from templates for selected distribution
+  def prepare_files
+    prepare_file('cfg')
+    prepare_file('packer', true)
+  end
 
-      json_output = "#{server_dir}/#{distribution}.json"
-      cfg_output = "#{server_dir}/#{distribution}.cfg"
+  def prepare_file(name, packer = false)
+    logger.debug("Creating temporary #{name} file...")
+    tmp = Tempfile.new("comfy_#{name}")
+    logger.debug("Temporary file '#{tmp.path}' was created.")
 
-      @logger.debug('Writing to temporary files...')
-      write_to_tmp(json_tmp, populate_template("#{template_dir}/packer.erb"))
-      write_to_tmp(cfg_tmp, populate_template("#{template_dir}/#{distribution}/#{distribution}.cfg.erb"))
+    output = File.join(data[:server_dir], "#{data[:distribution]}.#{name}")
 
-      @logger.debug('Copying files to proper location...')
-      FileUtils.cp(json_tmp.path, json_output)
-      FileUtils.cp(cfg_tmp.path, cfg_output)
+    logger.debug("Writing to temporary #{name} file...")
+    template_path = File.join(data[:template_dir], data[:distribution], "#{data[:distribution]}.#{name}.erb")
+    template_path = File.join(data[:template_dir], 'packer.erb') if packer
+    write_to_tmp(tmp, populate_template(template_path))
 
-      @logger.debug('Cleaning temporary files...')
-      json_tmp.close(true)
-      cfg_tmp.close(true)
-    end
+    logger.debug("Copying #{name} file to its proper location...")
+    FileUtils.cp(tmp.path, output)
 
-    def write_to_tmp(tmp, data)
-      tmp.write(data)
-      tmp.flush
-    end
+    logger.debug("Cleaning temporary #{name} file...")
+    tmp.close(true)
+  end
 
-    def populate_template(template)
-      @logger.debug("Populating template '#{template}'")
-      erb = ERB.new(File.read(template), nil, '-')
-      erb.filename = template
-      erb.result(binding)
-    end
+  def write_to_tmp(tmp, data)
+    tmp.write(data)
+    tmp.flush
+  end
+
+  def populate_template(template)
+    logger.debug("Populating template '#{template}'")
+    erb = ERB.new(File.read(template), nil, '-')
+    erb.filename = template
+    erb.result(binding)
   end
 end
