@@ -28,4 +28,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'syslogger', '~> 1.6.0'
   spec.add_runtime_dependency 'settingslogic', '~> 2.0.9'
   spec.add_runtime_dependency 'mixlib-shellout', '~> 2.0.1'
+  spec.add_runtime_dependency 'json-schema', '~> 2.5'
 end
