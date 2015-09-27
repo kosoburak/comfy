@@ -3,6 +3,7 @@ require 'ostruct'
 require 'pp'
 require 'settings'
 require 'fileutils'
+require 'json-schema'
 
 module Comfy
   # Class for parsing command line arguments
@@ -14,7 +15,6 @@ module Comfy
     SIZE_DEFAULT = 5000
     DEBUG_DEFAULT = false
     PACKER_FILE = "#{DIR}/packer.erb"
-
 
     # Return a structure with options
     def self.parse(args, logger)
@@ -33,13 +33,13 @@ module Comfy
 
         opts.on('-f', '--formats FORMAT1[,FORMAT2,...]', Array,
                 'Select the output format of the virtual machine image (qemu - qcow2, virtualbox - ova). '\
-              "Defaults to #{FORMAT_DEFAULT}.") do |formats|
+                "Defaults to #{FORMAT_DEFAULT}.") do |formats|
           options.formats = formats
         end
 
         opts.on('-s', '--size NUMBER', Integer,
                 'Specify disk size for created virtual machines (in MB). '\
-              'Defaults to 5000MB (5GB)') do |size|
+                'Defaults to 5000MB (5GB)') do |size|
           options.size = size
         end
 
@@ -105,11 +105,20 @@ module Comfy
       distributions = Dir.entries(DIR).select { |entry| entry != '.' && entry != '..' && File.directory?("#{DIR}/#{entry}") }
       versions = []
       distributions.each do |distribution|
-        description = File.read("#{DIR}/#{distribution}/#{distribution}.description")
+        description_file = "#{DIR}/#{distribution}/#{distribution}.description"
+        # TODO prepared for json schema implementation
+        # unless JSON::Validator.validate(description_SCHEMA_FILE, description_file)
+        unless true
+          puts "Invalid schema for distribution #{distribution}, skipping."
+          next
+        end
+
+        description = File.read(description_file)
         json = JSON.parse(description)
         name = json['name']
         json['versions'].each do |version|
-          name_version = "#{name} #{version['major_version']}.#{version['minor_version']}"
+          name_version = "#{name} #{version['major_version']}"
+          name_version << ".#{version['minor_version']}" if version['minor_version']
           name_version << ".#{version['patch_version']}" if version['patch_version']
           versions << name_version
         end
