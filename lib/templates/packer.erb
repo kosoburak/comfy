@@ -1,4 +1,4 @@
-{ 
+{
     "builders":
     [
     <% if @data[:builders].include?(:qemu) -%>
@@ -8,7 +8,7 @@
             "iso_url": "<%= @data[:distro][:version]['iso_url'] %>",
             "iso_checksum": "<%= @data[:distro][:version]['iso_checksum'] %>",
             "iso_checksum_type": "sha256",
-            "output_directory": "<%= @data[:output_dir] %>/<%= @data[:distribution]%>-<%= @data[:distro][:version]['major_version'] %>.<%= @data[:distro][:version]['minor_version'] %>/",
+            "output_directory": "<%= @data[:output_dir] %>/comfy_<%= @data[:distribution] %>-<%= @data[:distro][:version]['major_version'] %>.<%= @data[:distro][:version]['minor_version'] %>_qemu/",
             "ssh_wait_timeout": "90m",
             "shutdown_command": "shutdown -h now",
             "format": "qcow2",
@@ -25,7 +25,7 @@
 	            "<%= key %>":<% if value.is_a? String -%>"<%= value %>"<% else -%><%= value %><% end -%>,
               <% end -%>
             <% end -%>
-            "boot_command": 
+            "boot_command":
               [
               "<esc>",
               "<%= @data[:distro]['boot_command'] %>/<%= @data[:distribution] %>.cfg",
@@ -41,7 +41,7 @@
             "iso_url": "<%= @data[:distro][:version]['iso_url'] %>",
             "iso_checksum": "<%= @data[:distro][:version]['iso_checksum'] %>",
             "iso_checksum_type": "sha256",
-            "output_directory": "<%= @data[:output_dir] %>/<%= @data[:distribution]%>-<%= @data[:distro][:version]['major_version'] %>.<%= @data[:distro][:version]['minor_version'] %>/",
+            "output_directory": "<%= @data[:output_dir] %>/comfy_<%= @data[:distribution] %>-<%= @data[:distro][:version]['major_version'] %>.<%= @data[:distro][:version]['minor_version'] %>_virtualbox/",
             "ssh_wait_timeout": "90m",
             "shutdown_command": "shutdown -h now",
             "format": "ova",
@@ -58,7 +58,7 @@
             "<%= key %>":<% if value.is_a? String -%>"<%= value %>"<% else -%><%= value %><% end -%>,
               <% end -%>
             <% end -%>
-            "boot_command": 
+            "boot_command":
               [
               "<esc>",
               "<%= @data[:distro]['boot_command'] %>/<%= @data[:distribution] %>.cfg",
