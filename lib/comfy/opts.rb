@@ -8,6 +8,7 @@ require 'json-schema'
 module Comfy
   # Class for parsing command line arguments
   class Opts
+    OPTION_PARSING_ERROR_EXIT_CODE = 1
     DIR = Settings['vm_templates_dir'] ? Settings['vm_templates_dir'] : "#{GEM_DIR}/lib/templates"
     FORMATS = [:qemu, :virtualbox]
     # defaults

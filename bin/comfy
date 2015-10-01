@@ -4,6 +4,15 @@ require 'fileutils'
 require 'syslogger'
 require 'settings'
 
+# exit codes
+DEFAULT_EXIT_CODE = 0
+# OPTION_PARSING_ERROR_EXIT_CODE = 1 declared in Comfy::Opts
+JSON_SCHEMA_VALIDATION_ERROR_EXIT_CODE = 2
+PACKER_VALIDATION_ERROR_EXIT_CODE = 3
+PACKER_EXECUTION_ERROR_EXIT_CODE = 4
+INVALID_DISTRIBUTION_VERSION_ERROR_EXIT_CODE = 5
+NO_SUCH_DISTRIBUTION_VERSION_ERROR_EXIT_CODE = 6
+
 # Logger initialization
 logger = Logger.new(STDOUT)
 
@@ -56,19 +65,19 @@ begin
   creator.create
 rescue Comfy::Errors::PackerExecutionError
   logger.error($!.message)
-  exit(Comfy::PACKER_EXECUTION_ERROR_EXIT_CODE)
+  exit(PACKER_EXECUTION_ERROR_EXIT_CODE)
 rescue Comfy::Errors::PackerValidationError
   logger.error($!.message)
-  exit(Comfy::PACKER_VALIDATION_ERROR_EXIT_CODE)
+  exit(PACKER_VALIDATION_ERROR_EXIT_CODE)
 rescue Comfy::Errors::InvalidDistributionVersionError
   logger.error($!.message)
-  exit(Comfy::INVALID_DISTRIBUTION_VERSION_ERROR_EXIT_CODE)
+  exit(INVALID_DISTRIBUTION_VERSION_ERROR_EXIT_CODE)
 rescue Comfy::Errors::NoSuchDistributionVersionError
   logger.error($!.message)
-  exit(Comfy::NO_SUCH_DISTRIBUTION_VERSION_ERROR_EXIT_CODE)
+  exit(NO_SUCH_DISTRIBUTION_VERSION_ERROR_EXIT_CODE)
 rescue JSON::Schema::ValidationError
   logger.error($!.message)
-  exit(Comfy::JSON_SCHEMA_VALIDATION_ERROR_EXIT_CODE)
+  exit(JSON_SCHEMA_VALIDATION_ERROR_EXIT_CODE)
 ensure
   creator.clean()
 end
