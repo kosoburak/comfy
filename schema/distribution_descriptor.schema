@@ -26,6 +26,9 @@
                     },
                     "iso_checksum": {
                         "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
                     }
                 },
                 "required": [
@@ -36,7 +39,8 @@
                 "optional": [
                     "minor_version",
                     "patch_version",
-                    "codename"
+                    "codename",
+                    "name"
                 ],
                 "additionalProperties": false
             },
