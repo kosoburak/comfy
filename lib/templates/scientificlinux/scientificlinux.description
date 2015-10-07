@@ -6,7 +6,7 @@
       "iso_url": "http://mirror.karneval.cz/pub/linux/scientific/7/x86_64/iso/SL-7.1-x86_64-netinst.iso",
       "iso_checksum": "9b744b748199a7da27b181a6338b74520ea459ce80c240b8464f3842c10e79b6"
     }],
-  "boot_command": " linux ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}",
+  "boot_command": "linux ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}",
   "qemu": {
     "accelerator": "kvm",
     "qemuargs": [ [ "-m", "1024M" ] ]
