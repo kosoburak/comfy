@@ -59,6 +59,7 @@ describe Comfy::Creator do
     # no assumptions can be made about the contents of the file (saved in desc)
 
     let(:options) { { distribution: 'any_distro', server_dir: 'any_dir' } }
+    subject {creator.send(:choose_version)}
 
     # parameter: arr of version strings such as "14.5.2"
     # returns: string of available versions
@@ -98,7 +99,7 @@ describe Comfy::Creator do
         creator = Comfy::Creator.new(options, logger)
 
         expect(logger).to receive(:error)
-        expect { creator.send(:choose_version) }.to raise_error(SystemExit)
+        expect {subject}.to raise_error(SystemExit)
       end
     end
     context 'with empty versions array (user selects some version)' do
@@ -110,7 +111,7 @@ describe Comfy::Creator do
         creator.instance_variable_set('@options', options)
 
         expect(logger).to receive(:error)
-        expect { creator.send(:choose_version) }.to raise_error(SystemExit)
+        expect {subject}.to raise_error(SystemExit)
       end
     end
     context 'single version available, user selects nonexistent version' do
@@ -121,7 +122,7 @@ describe Comfy::Creator do
         creator.instance_variable_set('@options', options)
 
         expect(logger).to receive(:error)
-        expect { creator.send(:choose_version) }.to raise_error(SystemExit)
+        expect {subject}.to raise_error(SystemExit)
       end
     end
     context 'single version available, user selects newest' do
@@ -131,7 +132,7 @@ describe Comfy::Creator do
         allow(FileUtils).to receive(:remove_dir)
         creator.instance_variable_set('@options', options)
 
-        expect(creator.send(:choose_version)).to eq(create_versions(['12.7.11']).first)
+        is_expected.to eq(create_versions(['12.7.11']).first)
       end
     end
     context 'single version available, user selects it' do
@@ -141,7 +142,7 @@ describe Comfy::Creator do
         allow(FileUtils).to receive(:remove_dir)
         creator.instance_variable_set('@options', options)
 
-        expect(creator.send(:choose_version)).to eq(create_versions(['14.51']).first)
+        is_expected.to eq(create_versions(['14.51']).first)
       end
     end
     context 'version 14.04 available, user selects 14.04.05' do
@@ -152,7 +153,7 @@ describe Comfy::Creator do
         creator.instance_variable_set('@options', options)
 
         expect(logger).to receive(:error)
-        expect { creator.send(:choose_version) }.to raise_error(SystemExit)
+        expect {subject}.to raise_error(SystemExit)
       end
     end
     context 'version 14.05 available, user selects 14' do
@@ -162,7 +163,7 @@ describe Comfy::Creator do
         allow(FileUtils).to receive(:remove_dir)
         creator.instance_variable_set('@options', options)
 
-        expect(creator.send(:choose_version)).to eq(create_versions(['14.05']).first)
+        is_expected.to eq(create_versions(['14.05']).first)
       end
     end
     context 'version 14.05 available, user selects 14.5' do
@@ -172,7 +173,7 @@ describe Comfy::Creator do
         allow(FileUtils).to receive(:remove_dir)
         creator.instance_variable_set('@options', options)
 
-        expect(creator.send(:choose_version)).to eq(create_versions(['14.05']).first)
+        is_expected.to eq(create_versions(['14.05']).first)
       end
     end
     context 'version 14.05 available, user selects 14.6' do
@@ -183,7 +184,7 @@ describe Comfy::Creator do
         creator.instance_variable_set('@options', options)
 
         expect(logger).to receive(:error)
-        expect { creator.send(:choose_version) }.to raise_error(SystemExit)
+        expect {subject}.to raise_error(SystemExit)
       end
     end
     context 'version 14.05 available, user selects 5.' do
@@ -194,7 +195,7 @@ describe Comfy::Creator do
         creator.instance_variable_set('@options', options)
 
         expect(logger).to receive(:error)
-        expect { creator.send(:choose_version) }.to raise_error(SystemExit)
+        expect {subject}.to raise_error(SystemExit)
       end
     end
     context 'version 14.05 available, user selects 14....' do
@@ -204,7 +205,7 @@ describe Comfy::Creator do
         allow(FileUtils).to receive(:remove_dir)
         creator.instance_variable_set('@options', options)
 
-        expect(creator.send(:choose_version)).to eq(create_versions(['14.05']).first)
+        is_expected.to eq(create_versions(['14.05']).first)
       end
     end
     context 'version 14.05 available, user selects 14.5....' do
@@ -215,7 +216,7 @@ describe Comfy::Creator do
         allow(FileUtils).to receive(:remove_dir)
         creator.instance_variable_set('@options', options)
 
-        expect(creator.send(:choose_version)).to eq(create_versions(['14.05']).first)
+        is_expected.to eq(create_versions(['14.05']).first)
       end
     end
     context 'multiple versions available, user selects nonexistent version' do
@@ -228,7 +229,7 @@ describe Comfy::Creator do
         creator.instance_variable_set('@options', options)
 
         expect(logger).to receive(:error)
-        expect { creator.send(:choose_version) }.to raise_error(SystemExit)
+        expect {subject}.to raise_error(SystemExit)
       end
 
       it 'logs error message' do
@@ -238,7 +239,7 @@ describe Comfy::Creator do
         creator.instance_variable_set('@options', options)
 
         expect(logger).to receive(:error)
-        expect { creator.send(:choose_version) }.to raise_error(SystemExit)
+        expect {subject}.to raise_error(SystemExit)
       end
       it 'logs error message' do
         options[:distro] = versions
@@ -247,7 +248,7 @@ describe Comfy::Creator do
         creator.instance_variable_set('@options', options)
 
         expect(logger).to receive(:error)
-        expect { creator.send(:choose_version) }.to raise_error(SystemExit)
+        expect {subject}.to raise_error(SystemExit)
       end
     end
     context 'multiple versions available, user selects newest' do
@@ -270,7 +271,7 @@ describe Comfy::Creator do
         allow(FileUtils).to receive(:remove_dir)
         creator.instance_variable_set('@options', options)
 
-        expect(creator.send(:choose_version)).to eq(create_versions(['14']).first)
+        is_expected.to eq(create_versions(['14']).first)
       end
 
       it 'selects the correct version' do
@@ -279,7 +280,7 @@ describe Comfy::Creator do
         allow(FileUtils).to receive(:remove_dir)
         creator.instance_variable_set('@options', options)
 
-        expect(creator.send(:choose_version)).to eq(create_versions(['14.05']).first)
+        is_expected.to eq(create_versions(['14.05']).first)
       end
 
       it 'selects the correct version' do
@@ -288,7 +289,7 @@ describe Comfy::Creator do
         allow(FileUtils).to receive(:remove_dir)
         creator.instance_variable_set('@options', options)
 
-        expect(creator.send(:choose_version)).to eq(create_versions(['14.05.07']).first)
+        is_expected.to eq(create_versions(['14.05.07']).first)
       end
     end
     context 'multiple versions available, user selects something but only more specifc version is available' do
@@ -300,7 +301,7 @@ describe Comfy::Creator do
         allow(FileUtils).to receive(:remove_dir)
         creator.instance_variable_set('@options', options)
 
-        expect(creator.send(:choose_version)).to eq(create_versions(['11.04']).first)
+        is_expected.to eq(create_versions(['11.04']).first)
       end
 
       it 'selects the correct version' do
@@ -309,7 +310,7 @@ describe Comfy::Creator do
         allow(FileUtils).to receive(:remove_dir)
         creator.instance_variable_set('@options', options)
 
-        expect(creator.send(:choose_version)).to eq(create_versions(['12.05.4']).first)
+        is_expected.to eq(create_versions(['12.05.4']).first)
       end
     end
   end
