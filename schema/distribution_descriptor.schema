@@ -1,0 +1,241 @@
+{
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "versions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "major_version": {
+                        "type": "string"
+                    },
+                    "minor_version": {
+                        "type": "string"
+                    },
+                    "patch_version": {
+                        "type": "string"
+                    },
+                    "codename": {
+                        "type": "string"
+                    },
+                    "iso_url": {
+                        "type": "string"
+                    },
+                    "iso_checksum": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "major_version",
+                    "iso_url",
+                    "iso_checksum"
+                ],
+                "optional": [
+                    "minor_version",
+                    "patch_version",
+                    "codename",
+                    "name"
+                ],
+                "additionalProperties": false
+            },
+            "minItems": 1
+        },
+        "boot_command": {
+            "type": "string"
+        },
+        "qemu": {
+            "type": "object",
+            "properties": {
+                "accelerator": {
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "kvm",
+                        "tcg",
+                        "xen"
+                    ]
+                },
+                "disk_cache": {
+                    "type": "string",
+                    "enum": [
+                        "writethrough",
+                        "writeback",
+                        "none",
+                        "unsafe",
+                        "directsync"
+                    ]
+                },
+                "disk_discard": {
+                    "type": "string",
+                    "enum": [
+                        "unmap",
+                        "ignore"
+                    ]
+                },
+                "disk_image": {
+                    "type": "boolean"
+                },
+                "disk_interface": {
+                    "type": "string",
+                    "enum": [
+                        "ide",
+                        "scsi",
+                        "virtio"
+                    ]
+                },
+                "floppy_files": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "machine_type": {
+                    "type": "string"
+                },
+                "net_device": {
+                    "type": "string",
+                    "enum": [
+                        "ne2k_pci",
+                        "i82551",
+                        "i82557b",
+                        "i82559er",
+                        "rtl8139",
+                        "e1000",
+                        "pcnet",
+                        "virtio"
+                    ]
+                },
+                "qemu_binary": {
+                    "type": "string"
+                },
+                "qemuargs": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "vnc_port_min": {
+                    "type": "integer"
+                },
+                "vnc_port_max": {
+                    "type": "integer"
+                }
+            },
+            "optional": [
+                "accelerator",
+                "disk_cache",
+                "disk_discard",
+                "disk_image",
+                "disk_interface",
+                "floppy_files",
+                "machine_type",
+                "net_device",
+                "qemu_binary",
+                "qemuargs",
+                "vnc_port_min",
+                "vnc_port_max"
+            ],
+            "additionalProperties": false
+        },
+        "virtualbox": {
+            "type": "object",
+            "properties": {
+                "export_opts": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "guest_additions_mode": {
+                    "type": "string",
+                    "enum": [
+                        "upload",
+                        "attach",
+                        "disable"
+                    ]
+                },
+                "guest_additions_path": {
+                    "type": "string"
+                },
+                "guest_additions_sha256": {
+                    "type": "string"
+                },
+                "guest_additions_url": {
+                    "type": "string"
+                },
+                "guest_os_type": {
+                    "type": "string"
+                },
+                "hard_drive_interface": {
+                    "type": "string",
+                    "enum": [
+                        "ide",
+                        "sata",
+                        "scsi"
+                    ]
+                },
+                "iso_interface": {
+                    "type": "string",
+                    "enum": [
+                        "ide",
+                        "sata"
+                    ]
+                },
+                "vboxmanage": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "vboxmanage_post": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "virtualbox_version_file": {
+                    "type": "string"
+                }
+            },
+            "optional": [
+                "export_opts",
+                "guest_additions_mode",
+                "guest_additions_path",
+                "guest_additions_sha256",
+                "guest_additions_url",
+                "guest_os_type",
+                "hard_drive_interface",
+                "iso_interface",
+                "vboxmanage",
+                "vboxmanage_post",
+                "virtualbox_version_file"
+            ],
+            "additionalProperties": false
+        }
+    },
+    "required": [
+        "name",
+        "versions",
+        "boot_command"
+    ],
+    "optional": [
+        "qemu",
+        "virtualbox"
+    ],
+    "additionalProperties": false
+}
