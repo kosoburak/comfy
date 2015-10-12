@@ -30,6 +30,15 @@ class Comfy::Creator
     run_packer(packer_file)
   end
 
+  def clean
+    if data[:server_dir]
+      logger.debug("Cleaning temporary directory #{data[:server_dir]}.")
+      FileUtils.remove_dir(data[:server_dir])
+    end
+  end
+
+  private
+
   def run_packer(packer_file)
     logger.info("Calling Packer - building distribution: '#{data[:distribution]}'.")
     packer = Mixlib::ShellOut.new("packer validate #{packer_file}")
@@ -97,13 +106,6 @@ class Comfy::Creator
     raise Comfy::Errors::NoSuchDistributionVersionError, "No version '#{version}' available for distribution '#{data[:distribution]}'" if selected.empty?
 
     selected.sort_by { |v| [v[:major], v[:minor], v[:patch]] }.reverse.first[:version]
-  end
-
-  def clean
-    if data[:server_dir]
-      logger.debug("Cleaning temporary directory #{data[:server_dir]}.")
-      FileUtils.remove_dir(data[:server_dir])
-    end
   end
 
   def password

@@ -19,6 +19,8 @@ class Comfy::Templater
     prepare_file('packer', true)
   end
 
+  private
+
   def prepare_file(name, packer = false)
     logger.debug("Creating temporary #{name} file...")
     tmp = Tempfile.new("comfy_#{name}")
