@@ -33,11 +33,11 @@
                 },
                 "required": [
                     "major_version",
+                    "minor_version",
                     "iso_url",
                     "iso_checksum"
                 ],
                 "optional": [
-                    "minor_version",
                     "patch_version",
                     "codename",
                     "name"
