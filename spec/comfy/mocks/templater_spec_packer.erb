@@ -1,0 +1,91 @@
+{
+    "builders":
+    [
+    <% if @data[:builders].include?(:qemu) -%>
+	{
+            "name": "comfy_<%= @data[:distribution] %>-<%= @data[:distro][:version]['major_version'] %>.<%= @data[:distro][:version]['minor_version'] %>_qemu",
+            "type": "qemu",
+            "iso_url": "<%= @data[:distro][:version]['iso_url'] %>",
+            "iso_checksum": "<%= @data[:distro][:version]['iso_checksum'] %>",
+            "iso_checksum_type": "sha256",
+            "output_directory": "<%= @data[:output_dir] %>/<%= @data[:distribution]%>-<%= @data[:distro][:version]['major_version'] %>.<%= @data[:distro][:version]['minor_version'] %>/",
+            "ssh_wait_timeout": "90m",
+            "shutdown_command": "shutdown -h now",
+            "format": "qcow2",
+            "disk_size": <%= @data[:size] %>,
+            "headless": <%= @data[:headless] %>,
+            "http_directory": "<%= @data[:server_dir] %>",
+            "http_port_min": 8500,
+            "http_port_max": 8550,
+            "ssh_username": "root",
+            "ssh_password": "<%= @data[:password] %>",
+            "vm_name": "comfy_<%= @data[:distribution] %>-<%= @data[:distro][:version]['major_version'] %>.<%= @data[:distro][:version]['minor_version'] %>_qemu",
+            <% if @data[:distro]['qemu'] -%>
+	          <% @data[:distro]['qemu'].each_pair do |key, value| -%>
+	            "<%= key %>":<% if value.is_a? String -%>"<%= value %>"<% else -%><%= value %><% end -%>,
+              <% end -%>
+            <% end -%>
+            "boot_command":
+              [
+              "<esc>",
+              "<%= @data[:distro]['boot_command'] %>/<%= @data[:distribution] %>.cfg",
+              "<enter>"
+              ]
+        }
+    <% end -%>
+    <% if @data[:builders].include?(:virtualbox) -%>
+      <% if @data[:builders].include?(:qemu) -%>,<% end -%>
+      {
+            "name": "comfy_<%= @data[:distribution] %>-<%= @data[:distro][:version]['major_version'] %>.<%= @data[:distro][:version]['minor_version'] %>_virtualbox",
+            "type": "virtualbox-iso",
+            "iso_url": "<%= @data[:distro][:version]['iso_url'] %>",
+            "iso_checksum": "<%= @data[:distro][:version]['iso_checksum'] %>",
+            "iso_checksum_type": "sha256",
+            "output_directory": "<%= @data[:output_dir] %>/<%= @data[:distribution]%>-<%= @data[:distro][:version]['major_version'] %>.<%= @data[:distro][:version]['minor_version'] %>/",
+            "ssh_wait_timeout": "90m",
+            "shutdown_command": "shutdown -h now",
+            "format": "ova",
+            "disk_size": <%= @data[:size] %>,
+            "headless": <%= @data[:headless] %>,
+            "http_directory": "<%= @data[:server_dir] %>",
+            "http_port_min": 8500,
+            "http_port_max": 8550,
+            "ssh_username": "root",
+            "ssh_password": "<%= @data[:password] %>",
+            "vm_name": "comfy_<%= @data[:distribution] %>-<%= @data[:distro][:version]['major_version'] %>.<%= @data[:distro][:version]['minor_version'] %>_virtualbox",
+            <% if @data[:distro]['virtualbox'] -%>
+	          <% @data[:distro]['virtualbox'].each_pair do |key, value| -%>
+            "<%= key %>":<% if value.is_a? String -%>"<%= value %>"<% else -%><%= value %><% end -%>,
+              <% end -%>
+            <% end -%>
+            "boot_command":
+              [
+              "<esc>",
+              "<%= @data[:distro]['boot_command'] %>/<%= @data[:distribution] %>.cfg",
+              "<enter>"
+              ]
+        }
+    <% end -%>
+    ]<% if @data[:provisioners] -%>,
+
+    "provisioners":
+    [
+        <% @data[:provisioners][:files].each_with_index do |file,i| -%>
+        {
+            "type": "file",
+            "source": "<%= file %>",
+            "destination" : "/root/<%= file.split('/').last %>"
+        }<%if i != (@data[:provisioners][:files].size - 1) || (@data[:provisioners][:scripts] && !@data[:provisioners][:scripts].empty?) %>,
+        <% end -%>
+        <% end -%>
+
+        <% @data[:provisioners][:scripts].each_with_index do |script,i| -%>
+        {
+            "type": "shell",
+            "script": "<%= script %>"
+        }<%unless i == (@data[:provisioners][:scripts].size - 1) %>,
+        <% end -%>
+        <% end -%>
+    ]
+    <% end -%>
+}
