@@ -13,7 +13,7 @@ describe Comfy::Templater do
       allow(templater).to receive(:populate_template).and_return(returned)
       templater.send(:prepare_files)
 
-      path1 = "#{data[:server_dir]}/#{data[:distribution]}.json"
+      path1 = "#{data[:server_dir]}/#{data[:distribution]}.packer"
       path2 = "#{data[:server_dir]}/#{data[:distribution]}.cfg"
 
       expect(File.exist?(path1)).to eq(true)
