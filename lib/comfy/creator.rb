@@ -4,6 +4,7 @@ require 'mixlib/shellout'
 require 'tmpdir'
 require 'json'
 require 'json-schema'
+require 'cloud-appliance-descriptor'
 
 class Comfy::Creator
   attr_accessor :data
@@ -28,6 +29,16 @@ class Comfy::Creator
 
     packer_file = "#{data[:server_dir]}/#{data[:distribution]}.packer"
     run_packer(packer_file)
+
+    if @data[:create_description]
+      @data[:builders].each { |builder|
+        name = @data[:distribution]
+        major = @data[:distro][:version]['major_version']
+        minor = @data[:distro][:version]['minor_version']
+        dir = File.join(@data[:output_dir],"comfy_#{name}-#{major}.#{minor}_#{builder}/")
+        File.write(File.join(dir,"#{@data[:vm_identifier]}.description"),description(builder))
+      }
+    end
   end
 
   def clean
@@ -72,6 +83,8 @@ class Comfy::Creator
 
     data[:password] = password
     logger.debug("Temporary password: '#{data[:password]}'")
+
+    data[:vm_identifier] = @data[:vm_identifier_format].gsub(/(?!\\)%([a-zA-Z])/) {|match| replace_needle(match) }
   end
 
   def choose_version
@@ -111,5 +124,46 @@ class Comfy::Creator
   def password
     o = [('a'..'z'), ('A'..'Z')].map(&:to_a).flatten
     (0...100).map { o[rand(o.length)] }.join
+  end
+
+  # description generates appliance descriptor json
+  # returns the JSON of the appliance descriptor
+  def description(builder)
+    #FIXME? mapping platforms/builders to formats is hardcoded for now, nothing else is supported
+    formats = {:virtualbox => "ova", :qemu => "qcow2"}
+
+    os = Cloud::Appliance::Descriptor::Os.new :distribution => data[:distribution], :version => version_string
+    disk = Cloud::Appliance::Descriptor::Disk.new :type => :os, :format => formats[builder]
+
+    appliance = Cloud::Appliance::Descriptor::Appliance.new :action => :register, :os => os, :disk => disk
+    appliance.title = data[:distribution]
+    appliance.identifier = data[:vm_identifier]
+    appliance.version = version_string
+    appliance.groups = data[:vm_groups]
+
+    appliance.to_json
+  end
+
+  # replace_needle is used to replace needles in form of %x in vm_identifier
+  # returns the string that %x should be replaced with
+  def replace_needle(needle)
+    needle = needle[1]
+    replacements = {}
+    replacements[:t] = Time.now.to_i
+    replacements[:v] = version_string
+    replacements[:n] = data[:distribution]
+    replacements[:g] = data[:vm_groups].join(',')
+
+    fail ArgumentError, "replacement of '%#{needle}' not supported" unless replacements.has_key?(needle.to_sym)
+    replacements[needle.to_sym]
+  end
+
+  # returns version string made of major, minor, and patch version (if possible)
+  def version_string
+    result = ""
+    result += data[:distro][:version]['major_version'] if data[:distro][:version].has_key?('major_version')
+    result += "." + data[:distro][:version]['minor_version'] if data[:distro][:version].has_key?('minor_version')
+    result += "." + data[:distro][:version]['patch_version'] if data[:distro][:version].has_key?('patch_version')
+    result
   end
 end

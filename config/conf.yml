@@ -7,6 +7,9 @@ defaults: &defaults
     log_level: ERROR
     log_type: file # Two options: file, syslog. Defaults to stdout
     log_file: /var/log/comfy/comfy.log # File to write log to, used when type file selected
+  vm_groups: # groups VM belongs to, used when creating cloud-appliance-descriptor
+    - comfy
+  vm_identifier_format: METACLOUD-%n-%v-%t@metacloud-dukan # vm identifier, used in multiple places
 
 ########!!!!!!!DO NOT EDIT AFTER THIS POINT!!!!!!##########
 

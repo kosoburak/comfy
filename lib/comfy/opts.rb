@@ -16,6 +16,9 @@ module Comfy
     SIZE_DEFAULT = 5000
     DEBUG_DEFAULT = false
     PACKER_FILE = "#{DIR}/packer.erb"
+    CREATE_DESCRIPTION = true
+    VM_GROUPS = Settings['vm_groups']
+    VM_IDENTIFIER_FORMAT = Settings['vm_identifier_format']
 
     # Return a structure with options
     def self.parse(args, logger)
@@ -76,6 +79,18 @@ module Comfy
           clean_cache
           exit
         end
+
+        opts.on('--[no-]description','Do not create cloud appliance description file.') do |description|
+          options.create_description = description
+        end
+
+        opts.on('--groups', Array, 'VM groups are filled into \'groups\' when generating cloud appliance descriptor.') do |groups|
+          options.vm_groups = groups
+        end
+
+        opts.on('--vm-identifier','The format of VM\'s identifier') do |identifier|
+          options.vm_identifier_format = identifier
+        end
       end
 
       begin
@@ -98,6 +113,8 @@ module Comfy
       check_files(options)
       check_options_restrictions(options)
       check_settings_restrictions
+
+      fail ArgumentError, "vm_groups has to be set." unless Settings['vm_groups']
 
       options
     end
@@ -152,6 +169,9 @@ module Comfy
       options.debug ||= DEBUG_DEFAULT
       options.template_dir ||= DIR
       options.version ||= :newest
+      options.create_description ||= CREATE_DESCRIPTION
+      options.vm_groups ||= VM_GROUPS
+      options.vm_identifier_format ||= VM_IDENTIFIER_FORMAT
     end
 
     # Make sure we have templates
