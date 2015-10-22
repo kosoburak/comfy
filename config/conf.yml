@@ -9,6 +9,10 @@ defaults: &defaults
     log_file: /var/log/comfy/comfy.log # File to write log to, used when type file selected
   vm_groups: # groups VM belongs to, used when creating cloud-appliance-descriptor
     - comfy
+# %t - timestamp
+# %v - distribution version, consisting of major, minor, and patch version if possible
+# %n - distribution name
+# %g - groups the VM belongs to, separated by commas
   vm_identifier_format: METACLOUD-%n-%v-%t@metacloud-dukan # vm identifier, used in multiple places
 
 ########!!!!!!!DO NOT EDIT AFTER THIS POINT!!!!!!##########
