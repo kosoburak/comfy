@@ -114,8 +114,6 @@ module Comfy
       check_options_restrictions(options)
       check_settings_restrictions
 
-      fail ArgumentError, "vm_groups has to be set." unless Settings['vm_groups']
-
       options
     end
 
@@ -216,6 +214,9 @@ module Comfy
       if (FORMATS & options.formats).empty?
         fail ArgumentError, 'Unknown output format.'
       end
+
+      fail ArgumentError, "vm_groups has to be set (config file or cmd argument --groups)." unless options.vm_groups
+      fail ArgumentError, "vm_identifier_format has to be set (config file or cmd argument --vm-identifier-format)." unless options.vm_identifier_format
     end
 
     def self.check_settings_restrictions
