@@ -80,7 +80,7 @@ module Comfy
           exit
         end
 
-        opts.on('--[no-]description','Do not create cloud appliance description file.') do |description|
+        opts.on('--[no-]description', 'Do not create cloud appliance description file.') do |description|
           options.create_description = description
         end
 
@@ -88,7 +88,7 @@ module Comfy
           options.vm_groups = groups
         end
 
-        opts.on('--vm-identifier','The format of VM\'s identifier') do |identifier|
+        opts.on('--vm-identifier', 'The format of VM\'s identifier') do |identifier|
           options.vm_identifier_format = identifier
         end
       end

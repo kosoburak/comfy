@@ -31,13 +31,13 @@ class Comfy::Creator
     run_packer(packer_file)
 
     if @data[:create_description]
-      @data[:builders].each { |builder|
+      @data[:builders].each do |builder|
         name = @data[:distribution]
         major = @data[:distro][:version]['major_version']
         minor = @data[:distro][:version]['minor_version']
-        dir = File.join(@data[:output_dir],"comfy_#{name}-#{major}.#{minor}_#{builder}/")
-        File.write(File.join(dir,"#{@data[:vm_identifier]}.description"),description(builder))
-      }
+        dir = File.join(@data[:output_dir], "comfy_#{name}-#{major}.#{minor}_#{builder}/")
+        File.write(File.join(dir, "#{@data[:vm_identifier]}.description"), description(builder))
+      end
     end
   end
 
@@ -55,13 +55,13 @@ class Comfy::Creator
     packer = Mixlib::ShellOut.new("packer validate #{packer_file}")
     packer.run_command
 
-    raise Comfy::Errors::PackerValidationError, "Packer validation failed for distribution '#{data[:distribution]}': #{packer.stdout}" if packer.error?
+    fail Comfy::Errors::PackerValidationError, "Packer validation failed for distribution '#{data[:distribution]}': #{packer.stdout}" if packer.error?
 
     packer = Mixlib::ShellOut.new("packer build -parallel=false #{packer_file}", timeout: 5400)
     packer.live_stream = logger
     packer.run_command
 
-    raise Comfy::Errors::PackerExecutionError, "Packer finished with error for distribution '#{data[:distribution]}': #{packer.stderr}" if packer.error?
+    fail Comfy::Errors::PackerExecutionError, "Packer finished with error for distribution '#{data[:distribution]}': #{packer.stderr}" if packer.error?
 
     logger.info("Packer finished successfully for distribution '#{data[:distribution]}'")
   end
@@ -84,7 +84,7 @@ class Comfy::Creator
     data[:password] = password
     logger.debug("Temporary password: '#{data[:password]}'")
 
-    data[:vm_identifier] = @data[:vm_identifier_format].gsub(/(?!\\)%([a-zA-Z])/) {|match| replace_needle(match) }
+    data[:vm_identifier] = @data[:vm_identifier_format].gsub(/(?!\\)%([a-zA-Z])/) { |match| replace_needle(match) }
   end
 
   def choose_version
@@ -92,17 +92,17 @@ class Comfy::Creator
 
     available_versions = []
     data[:distro]['versions'].each do |v|
-      available_versions << {:major => v['major_version'].to_i, :minor => v['minor_version'].to_i, :patch => v['patch_version'].to_i, :version => v}
+      available_versions << { major: v['major_version'].to_i, minor: v['minor_version'].to_i, patch: v['patch_version'].to_i, version: v }
     end
     available_versions.sort_by! { |v| [v[:major], v[:minor], v[:patch]] }.reverse!
 
     return available_versions.first[:version] if version == :newest
 
     version_parts = version.split('.')
-    raise Comfy::Errors::InvalidDistributionVersionError, "Version '#{version}' is not a valid distribution version" if version_parts.size > 3
+    fail Comfy::Errors::InvalidDistributionVersionError, "Version '#{version}' is not a valid distribution version" if version_parts.size > 3
 
     version_parts.map! do |part|
-      raise Comfy::Errors::InvalidDistributionVersionError, "Version '#{version}' is not a valid distribution version" unless part =~ /\A\d+\z/
+      fail Comfy::Errors::InvalidDistributionVersionError, "Version '#{version}' is not a valid distribution version" unless part =~ /\A\d+\z/
 
       part.to_i
     end
@@ -116,7 +116,7 @@ class Comfy::Creator
       end
     end
 
-    raise Comfy::Errors::NoSuchDistributionVersionError, "No version '#{version}' available for distribution '#{data[:distribution]}'" if selected.empty?
+    fail Comfy::Errors::NoSuchDistributionVersionError, "No version '#{version}' available for distribution '#{data[:distribution]}'" if selected.empty?
 
     selected.sort_by { |v| [v[:major], v[:minor], v[:patch]] }.reverse.first[:version]
   end
@@ -129,13 +129,13 @@ class Comfy::Creator
   # description generates appliance descriptor json
   # returns the JSON of the appliance descriptor
   def description(builder)
-    #FIXME? mapping platforms/builders to formats is hardcoded for now, nothing else is supported
-    formats = {:virtualbox => "ova", :qemu => "qcow2"}
+    # FIXME? mapping platforms/builders to formats is hardcoded for now, nothing else is supported
+    formats = { virtualbox: 'ova', qemu: 'qcow2' }
 
-    os = Cloud::Appliance::Descriptor::Os.new :distribution => data[:distribution], :version => version_string
-    disk = Cloud::Appliance::Descriptor::Disk.new :type => :os, :format => formats[builder]
+    os = Cloud::Appliance::Descriptor::Os.new distribution: data[:distribution], version: version_string
+    disk = Cloud::Appliance::Descriptor::Disk.new type: :os, format: formats[builder]
 
-    appliance = Cloud::Appliance::Descriptor::Appliance.new :action => :register, :os => os, :disk => disk
+    appliance = Cloud::Appliance::Descriptor::Appliance.new action: :register, os: os, disk: disk
     appliance.title = data[:distribution]
     appliance.identifier = data[:vm_identifier]
     appliance.version = version_string
@@ -154,16 +154,16 @@ class Comfy::Creator
     replacements[:n] = data[:distribution]
     replacements[:g] = data[:vm_groups].join(',')
 
-    fail ArgumentError, "replacement of '%#{needle}' not supported" unless replacements.has_key?(needle.to_sym)
+    fail ArgumentError, "replacement of '%#{needle}' not supported" unless replacements.key?(needle.to_sym)
     replacements[needle.to_sym]
   end
 
   # returns version string made of major, minor, and patch version (if possible)
   def version_string
-    result = ""
-    result += data[:distro][:version]['major_version'] if data[:distro][:version].has_key?('major_version')
-    result += "." + data[:distro][:version]['minor_version'] if data[:distro][:version].has_key?('minor_version')
-    result += "." + data[:distro][:version]['patch_version'] if data[:distro][:version].has_key?('patch_version')
+    result = ''
+    result += data[:distro][:version]['major_version'] if data[:distro][:version].key?('major_version')
+    result += '.' + data[:distro][:version]['minor_version'] if data[:distro][:version].key?('minor_version')
+    result += '.' + data[:distro][:version]['patch_version'] if data[:distro][:version].key?('patch_version')
     result
   end
 end
