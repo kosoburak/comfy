@@ -2,8 +2,22 @@ require_relative '../spec_helper'
 
 describe Comfy::Creator do
   let(:logger) { Logger.new(STDERR) }
-  let(:options) { { distribution: 'any_distro', server_dir: 'any_dir' } }
+  let(:options) { { distribution: 'any_distro', server_dir: 'any_dir', vm_groups: ["a","b","c"] } }
   let(:creator) { Comfy::Creator.new(options, logger) }
+
+  describe ".replace_needles" do
+    it "returns the correct string" do
+      allow(creator).to receive(:version_string).and_return("123456")
+      format_str = "acbd!@$v-$v$-n$n$x&x$g"
+      expect(creator.send(:replace_needles,format_str)).to eq "acbd!@123456-123456$-nany_distro$x&xa,b,c"
+    end
+
+    it "returns the correct string" do
+      allow(creator).to receive(:version_string).and_return("123456")
+      format_str = "$$$$$/__$$x$$n-*$"
+      expect(creator.send(:replace_needles,format_str)).to eq "$$$$$/__$$x$any_distro-*$"
+    end
+  end
 
   describe '.password' do
     it 'returns different 100 chars long passwords' do

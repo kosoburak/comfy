@@ -10,6 +10,14 @@ class Comfy::Creator
   attr_accessor :data
   attr_reader :logger
 
+  NEEDLE_REPLACEMENTS = {
+    v: lambda { |instance| instance.send(:version_string)},
+    t: Time.now.to_i,
+    n: lambda { |instance| instance.data[:distribution]},
+    g: lambda{ |instance| instance.data[:vm_groups].join(',')}
+  }
+  REPLACEMENT_REGEX = /\$(?<replacement_char>[a-zA-Z])/
+
   def initialize(options, logger)
     @data = options.clone
     @logger = logger
@@ -85,7 +93,7 @@ class Comfy::Creator
     data[:password] = password
     logger.debug("Temporary password: '#{data[:password]}'")
 
-    data[:vm_identifier] = @data[:vm_identifier_format].gsub(/(?!\\)%([a-zA-Z])/) { |match| replace_needle(match) }
+    data[:vm_identifier] = replace_needles(data[:vm_identifier_format])
   end
 
   def choose_version
@@ -149,22 +157,19 @@ class Comfy::Creator
     appliance.to_json
   end
 
-  # Replace all needles in form of %x in vm_identifier_format string. The method is sequentially
-  # called with various needles and returns their replacements.
+  # Replace needles in the argument.
+  # Replacements are picked from NEEDLE_REPLACEMENTS constant.
   #
-  # @param needle [String] needle to be replaced.
+  # @param [String] format_string string with needles to be replaced
   #
-  # @return [String] the string that %x should be replaced with
-  def replace_needle(needle)
-    needle = needle[1]
-    replacements = {}
-    replacements[:t] = Time.now.to_i
-    replacements[:v] = version_string
-    replacements[:n] = data[:distribution]
-    replacements[:g] = data[:vm_groups].join(',')
+  # @return [String] format_string with all needles replaced
+  def replace_needles(format_string)
+    format_string.gsub!(REPLACEMENT_REGEX) do |match|
+      match_sym = $~[:replacement_char].to_sym
+      NEEDLE_REPLACEMENTS.key?(match_sym) ? NEEDLE_REPLACEMENTS[match_sym].call(self) : match
+    end
 
-    fail ArgumentError, "replacement of '%#{needle}' not supported" unless replacements.key?(needle.to_sym)
-    replacements[needle.to_sym]
+    format_string
   end
 
   # Simple method used to return versing string
