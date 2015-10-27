@@ -30,6 +30,7 @@ class Comfy::Creator
     packer_file = "#{data[:server_dir]}/#{data[:distribution]}.packer"
     run_packer(packer_file)
 
+    # let's create cloud appliance descriptor files
     if @data[:create_description]
       @data[:builders].each do |builder|
         name = @data[:distribution]
@@ -126,8 +127,12 @@ class Comfy::Creator
     (0...100).map { o[rand(o.length)] }.join
   end
 
-  # description generates appliance descriptor json
-  # returns the JSON of the appliance descriptor
+  # description returns cloud appliance descriptor JSON. It uses information gathered from command line arguments
+  # and the config file.
+  #
+  # @param builder [Symbol] builder used in the description of the cloud appliance descriptor
+  #
+  # @return [Json] appliance descriptor in Json format
   def description(builder)
     # FIXME? mapping platforms/builders to formats is hardcoded for now, nothing else is supported
     formats = { virtualbox: 'ova', qemu: 'qcow2' }
@@ -144,8 +149,12 @@ class Comfy::Creator
     appliance.to_json
   end
 
-  # replace_needle is used to replace needles in form of %x in vm_identifier
-  # returns the string that %x should be replaced with
+  # Replace all needles in form of %x in vm_identifier_format string. The method is sequentially
+  # called with various needles and returns their replacements.
+  #
+  # @param needle [String] needle to be replaced.
+  #
+  # @return [String] the string that %x should be replaced with
   def replace_needle(needle)
     needle = needle[1]
     replacements = {}
@@ -158,7 +167,9 @@ class Comfy::Creator
     replacements[needle.to_sym]
   end
 
-  # returns version string made of major, minor, and patch version (if possible)
+  # Simple method used to return versing string
+  #
+  # @return [String] string which contains major, minor, and patch version (if possible).
   def version_string
     result = ''
     result += data[:distro][:version]['major_version'] if data[:distro][:version].key?('major_version')
