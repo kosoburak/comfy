@@ -39,13 +39,13 @@ class Comfy::Creator
     run_packer(packer_file)
 
     # let's create cloud appliance descriptor files
-    if @data[:create_description]
-      @data[:builders].each do |builder|
-        name = @data[:distribution]
-        major = @data[:distro][:version]['major_version']
-        minor = @data[:distro][:version]['minor_version']
-        dir = File.join(@data[:output_dir], "comfy_#{name}-#{major}.#{minor}_#{builder}/")
-        File.write(File.join(dir, "#{@data[:vm_identifier]}.description"), description(builder))
+    if data[:create_description]
+      data[:builders].each do |builder|
+        name = data[:distribution]
+        major = data[:distro][:version]['major_version']
+        minor = data[:distro][:version]['minor_version']
+        dir = File.join(data[:output_dir], "comfy_#{name}-#{major}.#{minor}_#{builder}/")
+        File.write(File.join(dir, "#{data[:vm_identifier]}.json"), description(builder))
       end
     end
   end
@@ -148,7 +148,7 @@ class Comfy::Creator
     os = Cloud::Appliance::Descriptor::Os.new distribution: data[:distribution], version: version_string
     disk = Cloud::Appliance::Descriptor::Disk.new type: :os, format: formats[builder]
 
-    appliance = Cloud::Appliance::Descriptor::Appliance.new action: :register, os: os, disk: disk
+    appliance = Cloud::Appliance::Descriptor::Appliance.new action: :registration, os: os, disk: disk
     appliance.title = data[:distribution]
     appliance.identifier = data[:vm_identifier]
     appliance.version = version_string
