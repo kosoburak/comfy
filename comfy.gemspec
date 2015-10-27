@@ -30,5 +30,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'mixlib-shellout', '~> 2.0.1'
   spec.add_runtime_dependency 'json-schema', '~> 2.5'
   spec.add_runtime_dependency 'activesupport', '~> 4.2'
-  spec.add_runtime_dependency 'cloud-appliance-descriptor', '~> 0.2.1'
+  spec.add_runtime_dependency 'cloud-appliance-descriptor', '~> 0.2'
 end
