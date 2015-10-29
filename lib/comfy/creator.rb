@@ -11,12 +11,12 @@ class Comfy::Creator
   attr_reader :logger
 
   NEEDLE_REPLACEMENTS = {
-    v: lambda { |instance| instance.send(:version_string)},
-    t: Time.now.to_i,
-    n: lambda { |instance| instance.data[:distribution]},
-    g: lambda{ |instance| instance.data[:vm_groups].join(',')}
+    :$v => lambda { |instance| instance.send(:version_string) },
+    :$t => lambda { |instance| Time.new.strftime("%Y%m%d%H%M") },
+    :$n => lambda { |instance| instance.data[:distro]['name'] },
+    :$g => lambda { |instance| instance.data[:vm_groups].join(',') }
   }
-  REPLACEMENT_REGEX = /\$(?<replacement_char>[a-zA-Z])/
+  REPLACEMENT_REGEX = /\$[a-zA-Z]/
 
   def initialize(options, logger)
     @data = options.clone
@@ -164,12 +164,9 @@ class Comfy::Creator
   #
   # @return [String] format_string with all needles replaced
   def replace_needles(format_string)
-    format_string.gsub!(REPLACEMENT_REGEX) do |match|
-      match_sym = $~[:replacement_char].to_sym
-      NEEDLE_REPLACEMENTS.key?(match_sym) ? NEEDLE_REPLACEMENTS[match_sym].call(self) : match
+    format_string.gsub(REPLACEMENT_REGEX) do |match|
+      NEEDLE_REPLACEMENTS.key?(match.to_sym) ? NEEDLE_REPLACEMENTS[match.to_sym].call(self) : match
     end
-
-    format_string
   end
 
   # Simple method used to return versing string

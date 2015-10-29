@@ -2,7 +2,7 @@ require_relative '../spec_helper'
 
 describe Comfy::Creator do
   let(:logger) { Logger.new(STDERR) }
-  let(:options) { { distribution: 'any_distro', server_dir: 'any_dir', vm_groups: ["a","b","c"] } }
+  let(:options) { { distro: {'name' => 'any_distro'}, server_dir: 'any_dir', vm_groups: ["a","b","c"] } }
   let(:creator) { Comfy::Creator.new(options, logger) }
 
   describe ".replace_needles" do
