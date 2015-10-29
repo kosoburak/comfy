@@ -169,14 +169,14 @@ class Comfy::Creator
     end
   end
 
-  # Simple method used to return versing string
+  # Simple method used to return the version string
   #
   # @return [String] string which contains major, minor, and patch version (if possible).
   def version_string
-    result = ''
-    result += data[:distro][:version]['major_version'] if data[:distro][:version].key?('major_version')
-    result += '.' + data[:distro][:version]['minor_version'] if data[:distro][:version].key?('minor_version')
-    result += '.' + data[:distro][:version]['patch_version'] if data[:distro][:version].key?('patch_version')
-    result
+    result = []
+    result << data[:distro][:version]['major_version']
+    result << data[:distro][:version]['minor_version']
+    result << data[:distro][:version]['patch_version']
+    result.compact.join('.')
   end
 end
