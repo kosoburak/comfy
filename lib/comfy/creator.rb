@@ -93,7 +93,7 @@ class Comfy::Creator
     data[:password] = password
     logger.debug("Temporary password: '#{data[:password]}'")
 
-    data[:vm_identifier] = replace_needles(data[:vm_identifier_format])
+    data[:vm_identifier] = replace_needles(data[:vm_identifier])
   end
 
   def choose_version

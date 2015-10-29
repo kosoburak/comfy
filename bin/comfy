@@ -54,7 +54,7 @@ opts[:version] = options.version
 opts[:output_dir] = Settings['output_dir']
 opts[:create_description] = options.create_description
 opts[:vm_groups] = options.vm_groups
-opts[:vm_identifier_format] = options.vm_identifier_format
+opts[:vm_identifier] = options.vm_identifier
 
 if options.debug
   logger.level = Logger::DEBUG

@@ -18,7 +18,7 @@ module Comfy
     PACKER_FILE = "#{DIR}/packer.erb"
     CREATE_DESCRIPTION = true
     VM_GROUPS = Settings['vm_groups']
-    VM_IDENTIFIER_FORMAT = Settings['vm_identifier_format']
+    VM_IDENTIFIER = Settings['vm_identifier']
 
     # Return a structure with options
     def self.parse(args, logger)
@@ -89,7 +89,7 @@ module Comfy
         end
 
         opts.on('--vm-identifier', 'The format of VM\'s identifier') do |identifier|
-          options.vm_identifier_format = identifier
+          options.vm_identifier = identifier
         end
       end
 
@@ -169,7 +169,7 @@ module Comfy
       options.version ||= :newest
       options.create_description ||= CREATE_DESCRIPTION
       options.vm_groups ||= VM_GROUPS
-      options.vm_identifier_format ||= VM_IDENTIFIER_FORMAT
+      options.vm_identifier ||= VM_IDENTIFIER
     end
 
     # Make sure we have templates
@@ -216,7 +216,7 @@ module Comfy
       end
 
       fail ArgumentError, "vm_groups has to be set (config file or cmd argument --groups)." unless options.vm_groups
-      fail ArgumentError, "vm_identifier_format has to be set (config file or cmd argument --vm-identifier-format)." unless options.vm_identifier_format
+      fail ArgumentError, "vm_identifier has to be set (config file or cmd argument)." unless options.vm_identifier
     end
 
     def self.check_settings_restrictions
