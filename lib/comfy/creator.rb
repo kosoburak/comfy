@@ -144,11 +144,13 @@ class Comfy::Creator
   def description(builder)
     # FIXME? mapping platforms/builders to formats is hardcoded for now, nothing else is supported
     formats = { virtualbox: 'ova', qemu: 'qcow2' }
+    vm_name = "comfy_#{data[:distribution]}-#{data[:distro][:version]['major_version']}.#{data[:distro][:version]['minor_version']}_#{builder}"
+    disk_path = File.join(data[:output_dir],vm_name,vm_name)
 
     os = Cloud::Appliance::Descriptor::Os.new distribution: data[:distribution], version: version_string
-    disk = Cloud::Appliance::Descriptor::Disk.new type: :os, format: formats[builder]
+    disk = Cloud::Appliance::Descriptor::Disk.new type: :os, format: formats[builder], path: disk_path
 
-    appliance = Cloud::Appliance::Descriptor::Appliance.new action: :registration, os: os, disk: disk
+    appliance = Cloud::Appliance::Descriptor::Appliance.new action: :registration, os: os, disks: [disk]
     appliance.title = data[:distribution]
     appliance.identifier = data[:vm_identifier]
     appliance.version = version_string
