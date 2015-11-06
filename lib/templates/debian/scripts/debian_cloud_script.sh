@@ -22,7 +22,7 @@ apt-get --assume-yes install vim git
 
 
 # Enable services
-if [ "x$(lsb_release -rs)" == "x7.8" ]; then
+if [[ $(lsb_release -rs) == 7.* ]]; then
   insserv cloud-init-local
   insserv cloud-init
   insserv cloud-config
