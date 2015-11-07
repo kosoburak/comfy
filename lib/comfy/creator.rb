@@ -4,10 +4,19 @@ require 'mixlib/shellout'
 require 'tmpdir'
 require 'json'
 require 'json-schema'
+require 'cloud-appliance-descriptor'
 
 class Comfy::Creator
   attr_accessor :data
   attr_reader :logger
+
+  NEEDLE_REPLACEMENTS = {
+    :$v => lambda { |instance| instance.send(:version_string) },
+    :$t => lambda { |instance| Time.new.strftime("%Y%m%d%H%M") },
+    :$n => lambda { |instance| instance.data[:distro]['name'] },
+    :$g => lambda { |instance| instance.data[:vm_groups].join(',') }
+  }
+  REPLACEMENT_REGEX = /\$[a-zA-Z]/
 
   def initialize(options, logger)
     @data = options.clone
@@ -28,6 +37,17 @@ class Comfy::Creator
 
     packer_file = "#{data[:server_dir]}/#{data[:distribution]}.packer"
     run_packer(packer_file)
+
+    # let's create cloud appliance descriptor files
+    if data[:create_description]
+      data[:builders].each do |builder|
+        name = data[:distribution]
+        major = data[:distro][:version]['major_version']
+        minor = data[:distro][:version]['minor_version']
+        dir = File.join(data[:output_dir], "comfy_#{name}-#{major}.#{minor}_#{builder}/")
+        File.write(File.join(dir, "#{data[:vm_identifier]}.json"), description(builder))
+      end
+    end
   end
 
   def clean
@@ -44,13 +64,13 @@ class Comfy::Creator
     packer = Mixlib::ShellOut.new("packer validate #{packer_file}")
     packer.run_command
 
-    raise Comfy::Errors::PackerValidationError, "Packer validation failed for distribution '#{data[:distribution]}': #{packer.stdout}" if packer.error?
+    fail Comfy::Errors::PackerValidationError, "Packer validation failed for distribution '#{data[:distribution]}': #{packer.stdout}" if packer.error?
 
     packer = Mixlib::ShellOut.new("packer build -parallel=false #{packer_file}", timeout: 5400)
     packer.live_stream = logger
     packer.run_command
 
-    raise Comfy::Errors::PackerExecutionError, "Packer finished with error for distribution '#{data[:distribution]}': #{packer.stderr}" if packer.error?
+    fail Comfy::Errors::PackerExecutionError, "Packer finished with error for distribution '#{data[:distribution]}': #{packer.stderr}" if packer.error?
 
     logger.info("Packer finished successfully for distribution '#{data[:distribution]}'")
   end
@@ -72,6 +92,8 @@ class Comfy::Creator
 
     data[:password] = password
     logger.debug("Temporary password: '#{data[:password]}'")
+
+    data[:vm_identifier] = replace_needles(data[:vm_identifier])
   end
 
   def choose_version
@@ -79,17 +101,17 @@ class Comfy::Creator
 
     available_versions = []
     data[:distro]['versions'].each do |v|
-      available_versions << {:major => v['major_version'].to_i, :minor => v['minor_version'].to_i, :patch => v['patch_version'].to_i, :version => v}
+      available_versions << { major: v['major_version'].to_i, minor: v['minor_version'].to_i, patch: v['patch_version'].to_i, version: v }
     end
     available_versions.sort_by! { |v| [v[:major], v[:minor], v[:patch]] }.reverse!
 
     return available_versions.first[:version] if version == :newest
 
     version_parts = version.split('.')
-    raise Comfy::Errors::InvalidDistributionVersionError, "Version '#{version}' is not a valid distribution version" if version_parts.size > 3
+    fail Comfy::Errors::InvalidDistributionVersionError, "Version '#{version}' is not a valid distribution version" if version_parts.size > 3
 
     version_parts.map! do |part|
-      raise Comfy::Errors::InvalidDistributionVersionError, "Version '#{version}' is not a valid distribution version" unless part =~ /\A\d+\z/
+      fail Comfy::Errors::InvalidDistributionVersionError, "Version '#{version}' is not a valid distribution version" unless part =~ /\A\d+\z/
 
       part.to_i
     end
@@ -103,7 +125,7 @@ class Comfy::Creator
       end
     end
 
-    raise Comfy::Errors::NoSuchDistributionVersionError, "No version '#{version}' available for distribution '#{data[:distribution]}'" if selected.empty?
+    fail Comfy::Errors::NoSuchDistributionVersionError, "No version '#{version}' available for distribution '#{data[:distribution]}'" if selected.empty?
 
     selected.sort_by { |v| [v[:major], v[:minor], v[:patch]] }.reverse.first[:version]
   end
@@ -111,5 +133,52 @@ class Comfy::Creator
   def password
     o = [('a'..'z'), ('A'..'Z')].map(&:to_a).flatten
     (0...100).map { o[rand(o.length)] }.join
+  end
+
+  # description returns cloud appliance descriptor JSON. It uses information gathered from command line arguments
+  # and the config file.
+  #
+  # @param builder [Symbol] builder used in the description of the cloud appliance descriptor
+  #
+  # @return [Json] appliance descriptor in Json format
+  def description(builder)
+    # FIXME? mapping platforms/builders to formats is hardcoded for now, nothing else is supported
+    formats = { virtualbox: 'ova', qemu: 'qcow2' }
+    vm_name = "comfy_#{data[:distribution]}-#{data[:distro][:version]['major_version']}.#{data[:distro][:version]['minor_version']}_#{builder}"
+    disk_path = File.join(data[:output_dir],vm_name,vm_name)
+
+    os = Cloud::Appliance::Descriptor::Os.new distribution: data[:distribution], version: version_string
+    disk = Cloud::Appliance::Descriptor::Disk.new type: :os, format: formats[builder], path: disk_path
+
+    appliance = Cloud::Appliance::Descriptor::Appliance.new action: :registration, os: os, disks: [disk]
+    appliance.title = data[:distribution]
+    appliance.identifier = data[:vm_identifier]
+    appliance.version = version_string
+    appliance.groups = data[:vm_groups]
+
+    appliance.to_json
+  end
+
+  # Replace needles in the argument.
+  # Replacements are picked from NEEDLE_REPLACEMENTS constant.
+  #
+  # @param [String] format_string string with needles to be replaced
+  #
+  # @return [String] format_string with all needles replaced
+  def replace_needles(format_string)
+    format_string.gsub(REPLACEMENT_REGEX) do |match|
+      NEEDLE_REPLACEMENTS.key?(match.to_sym) ? NEEDLE_REPLACEMENTS[match.to_sym].call(self) : match
+    end
+  end
+
+  # Simple method used to return the version string
+  #
+  # @return [String] string which contains major, minor, and patch version (if possible).
+  def version_string
+    result = []
+    result << data[:distro][:version]['major_version']
+    result << data[:distro][:version]['minor_version']
+    result << data[:distro][:version]['patch_version']
+    result.compact.join('.')
   end
 end

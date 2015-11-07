@@ -16,6 +16,9 @@ module Comfy
     SIZE_DEFAULT = 5000
     DEBUG_DEFAULT = false
     PACKER_FILE = "#{DIR}/packer.erb"
+    CREATE_DESCRIPTION = true
+    VM_GROUPS = Settings['vm_groups']
+    VM_IDENTIFIER = Settings['vm_identifier']
 
     # Return a structure with options
     def self.parse(args, logger)
@@ -75,6 +78,18 @@ module Comfy
         opts.on('--clean-cache', 'Cleans packer\'s cache containing distributions\' installation media.') do
           clean_cache
           exit
+        end
+
+        opts.on('--[no-]description', 'Do not create cloud appliance description file.') do |description|
+          options.create_description = description
+        end
+
+        opts.on('--groups', Array, 'VM groups are filled into \'groups\' when generating cloud appliance descriptor.') do |groups|
+          options.vm_groups = groups
+        end
+
+        opts.on('--vm-identifier', 'The format of VM\'s identifier') do |identifier|
+          options.vm_identifier = identifier
         end
       end
 
@@ -152,6 +167,9 @@ module Comfy
       options.debug ||= DEBUG_DEFAULT
       options.template_dir ||= DIR
       options.version ||= :newest
+      options.create_description ||= CREATE_DESCRIPTION
+      options.vm_groups ||= VM_GROUPS
+      options.vm_identifier ||= VM_IDENTIFIER
     end
 
     # Make sure we have templates
@@ -196,6 +214,9 @@ module Comfy
       if (FORMATS & options.formats).empty?
         fail ArgumentError, 'Unknown output format.'
       end
+
+      fail ArgumentError, "vm_groups has to be set (config file or cmd argument --groups)." unless options.vm_groups
+      fail ArgumentError, "vm_identifier has to be set (config file or cmd argument)." unless options.vm_identifier
     end
 
     def self.check_settings_restrictions
