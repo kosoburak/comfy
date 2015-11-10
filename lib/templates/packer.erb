@@ -1,14 +1,14 @@
 {
     "builders":
     [
-    <% if @data[:builders].include?(:qemu) -%>
+    <% if @data[:formats].include?('qemu') -%>
 	{
             "name": "comfy_<%= @data[:distribution] %>-<%= @data[:distro][:version]['major_version'] %>.<%= @data[:distro][:version]['minor_version'] %>_qemu",
             "type": "qemu",
             "iso_url": "<%= @data[:distro][:version]['iso_url'] %>",
             "iso_checksum": "<%= @data[:distro][:version]['iso_checksum'] %>",
             "iso_checksum_type": "sha256",
-            "output_directory": "<%= @data[:output_dir] %>/comfy_<%= @data[:distribution] %>-<%= @data[:distro][:version]['major_version'] %>.<%= @data[:distro][:version]['minor_version'] %>_qemu/",
+            "output_directory": "<%= @data[:'output-dir'] %>/comfy_<%= @data[:distribution] %>-<%= @data[:distro][:version]['major_version'] %>.<%= @data[:distro][:version]['minor_version'] %>_qemu/",
             "ssh_wait_timeout": "90m",
             "shutdown_command": "shutdown -h now",
             "format": "qcow2",
@@ -34,15 +34,15 @@
               ]
         }
     <% end -%>
-    <% if @data[:builders].include?(:virtualbox) -%>
-      <% if @data[:builders].include?(:qemu) -%>,<% end -%>
+    <% if @data[:formats].include?('virtualbox') -%>
+      <% if @data[:formats].include?('qemu') -%>,<% end -%>
       {
             "name": "comfy_<%= @data[:distribution] %>-<%= @data[:distro][:version]['major_version'] %>.<%= @data[:distro][:version]['minor_version'] %>_virtualbox",
             "type": "virtualbox-iso",
             "iso_url": "<%= @data[:distro][:version]['iso_url'] %>",
             "iso_checksum": "<%= @data[:distro][:version]['iso_checksum'] %>",
             "iso_checksum_type": "sha256",
-            "output_directory": "<%= @data[:output_dir] %>/comfy_<%= @data[:distribution] %>-<%= @data[:distro][:version]['major_version'] %>.<%= @data[:distro][:version]['minor_version'] %>_virtualbox/",
+            "output_directory": "<%= @data[:'output-dir'] %>/comfy_<%= @data[:distribution] %>-<%= @data[:distro][:version]['major_version'] %>.<%= @data[:distro][:version]['minor_version'] %>_virtualbox/",
             "ssh_wait_timeout": "90m",
             "shutdown_command": "shutdown -h now",
             "format": "ova",

@@ -1,7 +1,7 @@
 require 'settingslogic'
 
-class Settings < Settingslogic
-  CONFIGURATION = 'conf.yml'
+class Comfy::Settings < Settingslogic
+  CONFIGURATION = 'comfy.yml'
 
   # three possible configuration file locations in order by preference
   # if configuration file is found rest of the locations are ignored

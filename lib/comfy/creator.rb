@@ -1,4 +1,3 @@
-require 'settings'
 require 'fileutils'
 require 'mixlib/shellout'
 require 'tmpdir'
@@ -8,19 +7,17 @@ require 'cloud-appliance-descriptor'
 
 class Comfy::Creator
   attr_accessor :data
-  attr_reader :logger
 
   NEEDLE_REPLACEMENTS = {
     :$v => lambda { |instance| instance.send(:version_string) },
     :$t => lambda { |instance| Time.new.strftime("%Y%m%d%H%M") },
     :$n => lambda { |instance| instance.data[:distro]['name'] },
-    :$g => lambda { |instance| instance.data[:vm_groups].join(',') }
+    :$g => lambda { |instance| instance.data[:groups].join(',') }
   }
   REPLACEMENT_REGEX = /\$[a-zA-Z]/
 
-  def initialize(options, logger)
+  def initialize(options)
     @data = options.clone
-    @logger = logger
   end
 
   def create
@@ -32,20 +29,20 @@ class Comfy::Creator
     prepare_data
     logger.debug("Prepared data: #{data}")
 
-    templater = Comfy::Templater.new(data, logger)
+    templater = Comfy::Templater.new data
     templater.prepare_files
 
     packer_file = "#{data[:server_dir]}/#{data[:distribution]}.packer"
     run_packer(packer_file)
 
     # let's create cloud appliance descriptor files
-    if data[:create_description]
-      data[:builders].each do |builder|
+    if data[:description]
+      data[:formats].each do |format|
         name = data[:distribution]
         major = data[:distro][:version]['major_version']
         minor = data[:distro][:version]['minor_version']
-        dir = File.join(data[:output_dir], "comfy_#{name}-#{major}.#{minor}_#{builder}/")
-        File.write(File.join(dir, "#{data[:vm_identifier]}.json"), description(builder))
+        dir = File.join(data[:'output-dir'], "comfy_#{name}-#{major}.#{minor}_#{format}/")
+        File.write(File.join(dir, "#{data[:identifier]}.json"), description(format))
       end
     end
   end
@@ -76,7 +73,7 @@ class Comfy::Creator
   end
 
   def prepare_data
-    description_file = "#{data[:template_dir]}/#{data[:distribution]}/#{data[:distribution]}.description"
+    description_file = "#{data[:'template-dir']}/#{data[:distribution]}/#{data[:distribution]}.description"
     JSON::Validator.validate!(Comfy::DESCRIPTION_SCHEMA_FILE, description_file)
 
     description = File.read(description_file)
@@ -87,13 +84,13 @@ class Comfy::Creator
     logger.debug("Version selected for build: #{data[:distro][:version]}")
 
     data[:provisioners] = {}
-    data[:provisioners][:scripts] = Dir.glob(File.join(data[:template_dir], data[:distribution], 'scripts', '*'))
-    data[:provisioners][:files] = Dir.glob(File.join(data[:template_dir], data[:distribution], 'files', '*'))
+    data[:provisioners][:scripts] = Dir.glob(File.join(data[:'template-dir'], data[:distribution], 'scripts', '*'))
+    data[:provisioners][:files] = Dir.glob(File.join(data[:'template-dir'], data[:distribution], 'files', '*'))
 
     data[:password] = password
     logger.debug("Temporary password: '#{data[:password]}'")
 
-    data[:vm_identifier] = replace_needles(data[:vm_identifier])
+    data[:identifier] = replace_needles(data[:identifier])
   end
 
   def choose_version
@@ -145,16 +142,16 @@ class Comfy::Creator
     # FIXME? mapping platforms/builders to formats is hardcoded for now, nothing else is supported
     formats = { virtualbox: 'ova', qemu: 'qcow2' }
     vm_name = "comfy_#{data[:distribution]}-#{data[:distro][:version]['major_version']}.#{data[:distro][:version]['minor_version']}_#{builder}"
-    disk_path = File.join(data[:output_dir],vm_name,vm_name)
+    disk_path = File.join(data[:'output-dir'],vm_name,vm_name)
 
     os = Cloud::Appliance::Descriptor::Os.new distribution: data[:distribution], version: version_string
     disk = Cloud::Appliance::Descriptor::Disk.new type: :os, format: formats[builder], path: disk_path
 
     appliance = Cloud::Appliance::Descriptor::Appliance.new action: :registration, os: os, disks: [disk]
     appliance.title = data[:distribution]
-    appliance.identifier = data[:vm_identifier]
+    appliance.identifier = data[:identifier]
     appliance.version = version_string
-    appliance.groups = data[:vm_groups]
+    appliance.groups = data[:groups]
 
     appliance.to_json
   end

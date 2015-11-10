@@ -32,4 +32,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'activesupport', '~> 4.2'
   spec.add_runtime_dependency 'cloud-appliance-descriptor', '~> 0.2'
   spec.add_runtime_dependency 'thor', '~> 0.19'
+  spec.add_runtime_dependency 'yell', '~> 2.0'
 end

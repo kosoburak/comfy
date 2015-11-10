@@ -1,16 +1,13 @@
-require 'settings'
-require 'logger'
 require 'tempfile'
 require 'erb'
 require 'fileutils'
 require 'tmpdir'
 
 class Comfy::Templater
-  attr_reader :logger, :data
+  attr_reader :data
 
-  def initialize(data, logger)
+  def initialize(data)
     @data = data
-    @logger = logger
   end
 
   # Prepares *.json and *.cfg files from templates for selected distribution
@@ -29,8 +26,8 @@ class Comfy::Templater
     output = File.join(data[:server_dir], "#{data[:distribution]}.#{name}")
 
     logger.debug("Writing to temporary #{name} file...")
-    template_path = File.join(data[:template_dir], data[:distribution], "#{data[:distribution]}.#{name}.erb")
-    template_path = File.join(data[:template_dir], 'packer.erb') if packer
+    template_path = File.join(data[:'template-dir'], data[:distribution], "#{data[:distribution]}.#{name}.erb")
+    template_path = File.join(data[:'template-dir'], 'packer.erb') if packer
     write_to_tmp(tmp, populate_template(template_path))
 
     logger.debug("Copying #{name} file to its proper location...")
