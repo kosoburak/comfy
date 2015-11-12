@@ -37,59 +37,88 @@ bundle exec rake spec
 Configuration file can be read by COMFY from these
 three locations:
 
-* `~/.comfy/conf.yml`
-* `/etc/comfy/conf.yml`
-* `PATH_TO_GEM_DIR/config/conf.yml`
+* `~/.comfy/comfy.yml`
+* `/etc/comfy/comfy.yml`
+* `PATH_TO_GEM_DIR/config/comfy.yml`
 
 The example configuration file can be found at the last location
-`PATH_TO_GEM_DIR/config/conf.yml`. When editing a configuration
+`PATH_TO_GEM_DIR/config/comfy.yml`. When editing a configuration
 file you have to follow the division into three environments: `production`,
 `development` and `test`. All the configuration options are described
 in the example configuration file.
 
 ##Usage
-COMFY is run with executable `comfy`. For a list of all
-available options run `comfy -h`:
+COMFY is run with executable `comfy`. For further assistance run `comfy help`:
 ```bash
-$ comfy -h
+$ comfy help
 
-Usage of COMFY tool: comfy [options] DISTRIBUTION
+Commands:
+  comfy DISTRIBUTION                            # Builds VM with selected distribution
+  comfy <DISTRIBUTION>-versions                 # Lists available versions for selected destribution
+  comfy clean-cache -c, --cache-dir=CACHE-DIR   # Cleans packer's cache containing distributions' installation media
+  comfy distributions                           # Lists all available distributions and their versions
+  comfy export -d, --destination=DESTINATION    # Exports files for building virtual machines. Helps with the customization of the build process.
+  comfy help [COMMAND]                          # Describe available commands or one specific command
+  comfy version                                 # Prints COMFY's version
 
-    -V, --distribution-version VERSION         Version of distribution to build. Defaults to the newest version.
-    -f, --formats FORMAT1[,FORMAT2,...]        Select the output format of the virtual machine image (qemu - qcow2, virtualbox - ova). Defaults to qemu.
-    -s, --size NUMBER                          Specify disk size for created virtual machines (in MB). Defaults to 5000MB (5GB)
-    -l, --list                                 Lists all the available distributions and their versions
-        --export DESTINATION                   Exports files for building virtual machines to directory DESTINATION. Helps with the customization of the build process.
-        --[no-]debug                           Run in debug mode
-    -h, --help                                 Shows this message
-    -v, --version                              Shows version of COMFY
+Options:
+  --logging-level=LOGGING-LEVEL
+                                 # Possible values: DEBUG, INFO, WARN, ERROR, FATAL, UNKNOWN
+  [--logging-file=LOGGING-FILE]  # File to write log to
+  [--debug], [--no-debug]        # Runs COMFY in debug mode
 ```
+
+Building process of selected VM can be customized. To list all the options for one of the distributions run `comfy help DISTRIBUTION`:
+```bash
+$ comfy help ubuntu
+
+Usage:
+  comfy ubuntu -c, --cache-dir=CACHE-DIR -f, --formats=one two three -o, --output-dir=OUTPUT-DIR -s, --size=N -v, --version=VERSION
+
+Options:
+  -v, --version=VERSION                    # Version of distribution to build
+  -f, --formats=one two three              # Output format of the virtual machine image (qemu - qcow2, virtualbox - ova)
+                                           # Possible values: qemu, virtualbox
+  -s, --size=N                             # Disk size for created virtual machines (in MB)
+  -o, --output-dir=OUTPUT-DIR              # Directory to which COMFY will produce virtual machine files
+  -c, --cache-dir=CACHE-DIR                # Directory for packer's cache e.g. distribution installation images
+  -g, [--groups=one two three]             # Groups VM belongs to. For automatic processing purposes
+  -i, [--identifier=IDENTIFIER]            # VM identifier. For automatic processing purposes
+  -d, [--description], [--no-description]  # Generates VM description file. For automatic processing purposes
+  -t, [--template-dir=TEMPLATE-DIR]        # Directory COMFY uses templates from to build a VM
+      --logging-level=LOGGING-LEVEL
+                                           # Possible values: DEBUG, INFO, WARN, ERROR, FATAL, UNKNOWN
+      [--logging-file=LOGGING-FILE]        # File to write log to
+      [--debug], [--no-debug]              # Runs COMFY in debug mode
+
+Builds VM with distribution Ubuntu
+```
+
 COMFY currently supports building of these distributions:
 * CentOS 7.1.1503
-* Debian 7.8.0
-* Debian 8.1.0
+* Debian 7.9.0
+* Debian 8.2.0
 * ScientificLinux 7.1
-* Ubuntu 12.04
 * Ubuntu 14.04
 
 ##Example
-To start a building process for example for ubuntu simply run:
+To start a building process for example for debian simply run:
 ```bash
-$ comfy ubuntu
+$ comfy debian
 ```
 When not specified, COMFY will build the newest version of selected distribution. If you want to select a specific version run:
 ```bash
-$ comfy -V 12.04 ubuntu
+$ comfy debian -v 7.9.0
 ```
 COMFY uses by default a QEMU supervisor for image creation. If you want to use VirtualBox you can do it with:
 ```bash
-$ comfy -f virtualbox ubuntu
+$ comfy debian -f virtualbox
 ```
 Or if you want to use both:
 ```bash
-$ comfy -f qemu,virtualbox ubuntu
+$ comfy debian -f qemu virtualbox
 ```
-This will create virtual machine images in both `qcow2` and `ova` formats. Since QEMU and VirtualBox can't run simultaneously, images are created in two sequential runs.
+This will create virtual machine images in both `qcow2` and `ovf` formats. Since QEMU and VirtualBox can't run simultaneously, images are created in two sequential runs.
 
 ##Continuous integration
 [Continuous integration for COMFY by Travis-CI](http://travis-ci.org/Misenko/comfy/)
@@ -100,4 +129,3 @@ This will create virtual machine images in both `qcow2` and `ova` formats. Since
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
-
