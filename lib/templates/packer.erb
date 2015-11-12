@@ -19,7 +19,7 @@
             "http_port_max": 8550,
             "ssh_username": "root",
             "ssh_password": "<%= @data[:password] %>",
-            "vm_name": "comfy_<%= @data[:distribution] %>-<%= @data[:distro][:version]['major_version'] %>.<%= @data[:distro][:version]['minor_version'] %>_qemu",
+            "vm_name": "comfy_<%= @data[:distribution] %>-<%= @data[:distro][:version]['major_version'] %>.<%= @data[:distro][:version]['minor_version'] %>_qemu.qcow2",
             <% if @data[:distro]['qemu'] -%>
 	          <% @data[:distro]['qemu'].each_pair do |key, value| -%>
 	            "<%= key %>":<% if value.is_a? String -%>"<%= value %>"<% else -%><%= value %><% end -%>,

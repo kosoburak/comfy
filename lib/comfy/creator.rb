@@ -140,17 +140,18 @@ class Comfy::Creator
   # @return [Json] appliance descriptor in Json format
   def description(builder)
     # FIXME? mapping platforms/builders to formats is hardcoded for now, nothing else is supported
-    formats = { virtualbox: 'ova', qemu: 'qcow2' }
-    vm_name = "comfy_#{data[:distribution]}-#{data[:distro][:version]['major_version']}.#{data[:distro][:version]['minor_version']}_#{builder}"
-    disk_path = File.join(data[:'output-dir'],vm_name,vm_name)
+    formats = { 'virtualbox' => 'ova', 'qemu' => 'qcow2' }
+    vm_dir = "comfy_#{data[:distribution]}-#{data[:distro][:version]['major_version']}.#{data[:distro][:version]['minor_version']}_#{builder}"
+    vm_name = "#{vm_dir}.#{formats[builder]}"
+    disk_path = File.join(data[:'output-dir'],vm_dir,vm_name)
 
     os = Cloud::Appliance::Descriptor::Os.new distribution: data[:distribution], version: version_string
     disk = Cloud::Appliance::Descriptor::Disk.new type: :os, format: formats[builder], path: disk_path
 
     appliance = Cloud::Appliance::Descriptor::Appliance.new action: :registration, os: os, disks: [disk]
-    appliance.title = data[:distribution]
+    appliance.title = data[:distro]['name']
     appliance.identifier = data[:identifier]
-    appliance.version = version_string
+    appliance.version = Time.now.to_i
     appliance.groups = data[:groups]
 
     appliance.to_json
