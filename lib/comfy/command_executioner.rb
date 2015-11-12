@@ -55,7 +55,7 @@ class Comfy::CommandExecutioner < Thor
     $stdout.puts Comfy::VERSION
   end
 
-  desc 'distributions', 'List all available distributions and their versions'
+  desc 'distributions', 'Lists all available distributions and their versions'
   def distributions
     self.class.available_distributions.each do |distribution, versions|
       versions.each { |version| $stdout.puts "#{distribution} #{version}" }
@@ -105,7 +105,7 @@ class Comfy::CommandExecutioner < Thor
                   default: Comfy::Settings['formats'],
                   enum: ['qemu', 'virtualbox'],
                   required: true,
-                  desc: 'Select the output format of the virtual machine image (qemu - qcow2, virtualbox - ovf)'
+                  desc: 'Output format of the virtual machine image (qemu - qcow2, virtualbox - ova)'
     method_option :size,
                   type: :numeric,
                   aliases: '-s',
@@ -138,7 +138,7 @@ class Comfy::CommandExecutioner < Thor
                   type: :boolean,
                   aliases: '-d',
                   default: Comfy::Settings['description'],
-                  desc: 'Generate VM description file. For automatic processing purposes'
+                  desc: 'Generates VM description file. For automatic processing purposes'
     method_option :'template-dir',
                   type: :string,
                   aliases: '-t',
@@ -146,12 +146,12 @@ class Comfy::CommandExecutioner < Thor
                   desc: 'Directory COMFY uses templates from to build a VM'
 
     class_eval %Q^
-desc '#{plain_name}', 'Build VM with distribution #{name}'
+desc '#{plain_name}', 'Builds VM with distribution #{name}'
 def #{plain_name}
   start('#{plain_name}', options)
 end
 
-desc '#{plain_name}-versions', 'List all available versions of #{name}'
+desc '#{plain_name}-versions', 'Lists all available versions of #{name}'
 def #{plain_name}_versions
   #{versions}.each { |version| $stdout.puts version }
 end
@@ -190,8 +190,6 @@ end
       parameters[:'logging-level'] = 'DEBUG'
       ENV['PACKER_LOG'] = '1'
     end
-
-
 
     Yell.new :stdout, :name => Object, :level => parameters[:'logging-level'].downcase, :format => Yell::DefaultFormat
     Object.send :include, Yell::Loggable
