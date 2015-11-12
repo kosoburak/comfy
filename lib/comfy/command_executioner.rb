@@ -164,6 +164,7 @@ end
     parameters = options.to_hash.deep_symbolize_keys
     parameters[:distribution] = distribution_name
     parameters[:headless] = !parameters[:debug]
+    ENV['PACKER_CACHE_DIR'] = parameters[:'cache-dir']
 
     init_log parameters
     check_distribution_files distribution_name
