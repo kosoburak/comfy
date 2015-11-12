@@ -1,6 +1,5 @@
 require_relative '../spec_helper'
 describe Comfy::Templater do
-  let(:logger) { Logger.new(STDERR) }
   let(:mocks_source_path) { File.expand_path(File.dirname(__FILE__)) + '/mocks/' }
 
   describe '.prepare_files' do
@@ -8,8 +7,8 @@ describe Comfy::Templater do
     # whether templates are filled correctly is checked in prepare_template
     it 'outputs correct files' do
       returned = 'something that populate_template returns'
-      data = { distribution: 'abc', template_dir: 'asd', server_dir: '/tmp' }
-      templater = Comfy::Templater.new(data, logger)
+      data = { distribution: 'abc', :'template-dir' => 'asd', server_dir: '/tmp' }
+      templater = Comfy::Templater.new(data)
       allow(templater).to receive(:populate_template).and_return(returned)
       templater.send(:prepare_files)
 
@@ -49,7 +48,7 @@ describe Comfy::Templater do
       data[:password] = 'some password'
 
       # fill templates using populate_template method
-      templater = Comfy::Templater.new(data, logger)
+      templater = Comfy::Templater.new(data)
       filled_packer = templater.send(:populate_template, mocks_source_path + 'templater_spec_packer.erb')
       filled_cfg = templater.send(:populate_template, mocks_source_path + 'templater_spec_cfg.erb')
 

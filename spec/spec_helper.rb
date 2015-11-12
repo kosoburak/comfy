@@ -8,7 +8,6 @@ end
 ENV['RAILS_ENV'] = 'test'
 
 require 'comfy'
-require 'comfy/opts'
 
 GEM_DIR = File.realdirpath("#{File.dirname(__FILE__)}/..")
 
@@ -17,3 +16,6 @@ RSpec.configure do |config|
   config.tty = true
   config.order = 'random'
 end
+
+Yell.new :stdout, :name => Object, :level => 'error', :format => Yell::DefaultFormat
+Object.send :include, Yell::Loggable

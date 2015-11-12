@@ -9,7 +9,7 @@ class Comfy::Settings < Settingslogic
  if File.exist?("#{ENV['HOME']}/.comfy/#{CONFIGURATION}")
   source "/etc/comfy/#{CONFIGURATION}"\
  if File.exist?("/etc/comfy/#{CONFIGURATION}")
-  source "#{File.dirname(__FILE__)}/../config/#{CONFIGURATION}"
+  source "#{File.dirname(__FILE__)}/../../config/#{CONFIGURATION}"
 
   namespace 'production'
 end
