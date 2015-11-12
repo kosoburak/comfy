@@ -8,6 +8,8 @@ module Comfy
 
   require 'active_support/all'
 
+  require 'comfy/extensions/yell'
+
   require 'comfy/command_executioner'
   require 'comfy/version'
   require 'comfy/templater'

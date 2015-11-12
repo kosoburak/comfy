@@ -3,12 +3,6 @@ require 'yell'
 require 'json-schema'
 require 'fileutils'
 
-class Yell::Logger
-  def <<(x)
-    info x
-  end
-end
-
 class Comfy::CommandExecutioner < Thor
   class << self
     def available_distributions
