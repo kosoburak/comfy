@@ -13,7 +13,7 @@ production:
 # $v - distribution version, consisting of major, minor, and patch version if possible
 # $n - distribution name
 # $g - groups the VM belongs to, separated by commas
-  identifier: METACLOUD-$n-$v-$t@metacloud-dukan # vm identifier, used in multiple places
+  identifier: METACLOUD-$n-$v # vm identifier, used in multiple places
   logging:
     level: ERROR
     file: /var/log/comfy/comfy.log # File to write log to, used when type file selected

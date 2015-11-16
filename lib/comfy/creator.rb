@@ -8,9 +8,11 @@ require 'cloud-appliance-descriptor'
 class Comfy::Creator
   attr_accessor :data
 
+  TIMESTAMP_FORMAT = '%Y%m%d%H%M'
+
   NEEDLE_REPLACEMENTS = {
     :$v => lambda { |instance| instance.send(:version_string) },
-    :$t => lambda { |instance| Time.new.strftime("%Y%m%d%H%M") },
+    :$t => lambda { |instance| Time.new.strftime(TIMESTAMP_FORMAT) },
     :$n => lambda { |instance| instance.data[:distro]['name'] },
     :$g => lambda { |instance| instance.data[:groups].join(',') }
   }
@@ -151,7 +153,7 @@ class Comfy::Creator
     appliance = Cloud::Appliance::Descriptor::Appliance.new action: :registration, os: os, disks: [disk]
     appliance.title = data[:distro]['name']
     appliance.identifier = data[:identifier]
-    appliance.version = Time.now.to_i
+    appliance.version = Time.new.strftime(TIMESTAMP_FORMAT)
     appliance.groups = data[:groups]
 
     appliance.to_json
