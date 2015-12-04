@@ -1,10 +1,10 @@
 # COMFY - ClOud iMage FactorY
-COMFY is a tool for building virtual machine images from scratch and their upload to OpenNebula data stores.
+COMFY is a tool for building virtual machine images from scratch.
 
-[![Build Status](https://secure.travis-ci.org/Misenko/comfy.png)](http://travis-ci.org/Misenko/comfy)
-[![Dependency Status](https://gemnasium.com/Misenko/comfy.png)](https://gemnasium.com/Misenko/comfy)
+[![Build Status](https://secure.travis-ci.org/CESNET/comfy.png)](http://travis-ci.org/CESNET/comfy)
+[![Dependency Status](https://gemnasium.com/CESNET/comfy.png)](https://gemnasium.com/CESNET/comfy)
 [![Gem Version](https://fury-badge.herokuapp.com/rb/comfy.png)](https://badge.fury.io/rb/comfy)
-[![Code Climate](https://codeclimate.com/github/Misenko/comfy.png)](https://codeclimate.com/github/Misenko/comfy)
+[![Code Climate](https://codeclimate.com/github/CESNET/comfy.png)](https://codeclimate.com/github/CESNET/comfy)
 
 ##Requirements
 * Ruby >= 1.9.3
@@ -25,7 +25,7 @@ familiar with RVM, Bundler, Rake and other dev tools for Ruby!**
 To build and install the bleeding edge version from master
 
 ```bash
-git clone git://github.com/Misenko/comfy.git
+git clone git://github.com/CESNET/comfy.git
 cd comfy
 gem install bundler
 bundle install
@@ -121,10 +121,10 @@ $ comfy debian -f qemu virtualbox
 This will create virtual machine images in both `qcow2` and `ovf` formats. Since QEMU and VirtualBox can't run simultaneously, images are created in two sequential runs.
 
 ##Continuous integration
-[Continuous integration for COMFY by Travis-CI](http://travis-ci.org/Misenko/comfy/)
+[Continuous integration for COMFY by Travis-CI](http://travis-ci.org/CESNET/comfy/)
 
 ## Contributing
-1. Fork it ( https://github.com/Misenko/comfy/fork )
+1. Fork it ( https://github.com/CESNET/comfy/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
