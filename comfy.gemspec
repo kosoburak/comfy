@@ -9,10 +9,10 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Michal Kimle', 'Ľubomír Košarišťan']
   spec.email         = ['kimle.michal@gmail.com', 'kosoburak@gmail.com']
 
-  spec.summary       = 'Tool for building virtual machine images from scratch and their upload to OpenNebula.'
-  spec.description   = 'Tool for building virtual machine images from scratch and their upload to OpenNebula.'
+  spec.summary       = 'Tool for building virtual machine images from scratch.'
+  spec.description   = 'Tool for building virtual machine images from scratch.'
   spec.homepage      = 'https://github.com/Misenko/comfy'
-  spec.license       = 'MIT'
+  spec.license       = 'Apache License 2.0'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
