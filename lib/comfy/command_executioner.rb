@@ -5,6 +5,10 @@ require 'fileutils'
 
 class Comfy::CommandExecutioner < Thor
   class << self
+    
+    # Method listing available distributions from template directory.
+    #
+    # @return [Hash] distributions structure containing info about them
     def available_distributions
       dir = Comfy::TEMPLATE_DIR
       return {} unless File.exist? dir

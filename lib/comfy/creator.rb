@@ -5,6 +5,7 @@ require 'json'
 require 'json-schema'
 require 'cloud-appliance-descriptor'
 
+# Creates given virtual machine images.
 class Comfy::Creator
   attr_accessor :data
 
@@ -18,10 +19,15 @@ class Comfy::Creator
   }
   REPLACEMENT_REGEX = /\$[a-zA-Z]/
 
+  # Creates a creator instance.
+  #
+  # @param options [Hashie::Mash] hash-like structure with options
   def initialize(options)
     @data = options.clone
   end
 
+  # Method representing thw whole creation process. Prepares enviroment,
+  # prepare files and starts packer job.
   def create
     logger.info('Preparing for image creation...')
 
@@ -49,6 +55,7 @@ class Comfy::Creator
     end
   end
 
+  # Cleans everything from temporary directory
   def clean
     if data[:server_dir]
       logger.debug("Cleaning temporary directory #{data[:server_dir]}.")
@@ -58,6 +65,9 @@ class Comfy::Creator
 
   private
 
+  # Method wrapping usage of packer tool.
+  #
+  # @param packer_file descriptor file with info for packer processing.
   def run_packer(packer_file)
     logger.info("Calling Packer - building distribution: '#{data[:distribution]}'.")
     packer = Mixlib::ShellOut.new("packer validate #{packer_file}")
@@ -74,6 +84,8 @@ class Comfy::Creator
     logger.info("Packer finished successfully for distribution '#{data[:distribution]}'")
   end
 
+  # Preparation of various data. Method prepares description file for packer and distribution
+  # preseed / kickstart file.
   def prepare_data
     description_file = "#{data[:'template-dir']}/#{data[:distribution]}/#{data[:distribution]}.description"
     JSON::Validator.validate!(Comfy::DESCRIPTION_SCHEMA_FILE, description_file)
@@ -95,6 +107,7 @@ class Comfy::Creator
     data[:identifier] = replace_needles(data[:identifier])
   end
 
+  # Choose_version is a method that selects required version from available versions.
   def choose_version
     version = data[:version]
 
@@ -129,12 +142,15 @@ class Comfy::Creator
     selected.sort_by { |v| [v[:major], v[:minor], v[:patch]] }.reverse.first[:version]
   end
 
+  # Method generating a temporary random password used while creating image.
+  #
+  # @return [String] password
   def password
     o = [('a'..'z'), ('A'..'Z')].map(&:to_a).flatten
     (0...100).map { o[rand(o.length)] }.join
   end
 
-  # description returns cloud appliance descriptor JSON. It uses information gathered from command line arguments
+  # Description returns cloud appliance descriptor JSON. It uses information gathered from command line arguments
   # and the config file.
   #
   # @param builder [Symbol] builder used in the description of the cloud appliance descriptor
