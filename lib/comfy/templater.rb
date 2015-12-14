@@ -3,9 +3,13 @@ require 'erb'
 require 'fileutils'
 require 'tmpdir'
 
+# Class used for preparing and filling file templates.
 class Comfy::Templater
   attr_reader :data
 
+  # Creates an instance of Templater.
+  #
+  # @param data [Hash] prepared data with distro, provisioners, files, password and identifier info.
   def initialize(data)
     @data = data
   end
@@ -18,6 +22,10 @@ class Comfy::Templater
 
   private
 
+  # Method prepares .erb file with given data.
+  #
+  # @param name [String] type of file for preparation.
+  # @param packer [Boolean] (implicite value = false).
   def prepare_file(name, packer = false)
     logger.debug("Creating temporary #{name} file...")
     tmp = Tempfile.new("comfy_#{name}")
@@ -42,6 +50,9 @@ class Comfy::Templater
     tmp.flush
   end
 
+  # Actual filling of .erb fils with given info.
+  #
+  # @param template [String] path to template file.
   def populate_template(template)
     logger.debug("Populating template '#{template}'")
     erb = ERB.new(File.read(template), nil, '-')
