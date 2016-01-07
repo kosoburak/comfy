@@ -1,0 +1,6 @@
+# depot_all
+Explanation: : depot_all
+Package: *
+Pin: origin "depot1.mc.cesnet.cz"
+Pin-Priority: 20
+
