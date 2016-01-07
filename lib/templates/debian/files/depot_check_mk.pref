@@ -1,0 +1,5 @@
+# depot_check_mk
+Explanation: : depot_check_mk
+Package: check-mk*
+Pin: origin "depot1.mc.cesnet.cz"
+Pin-Priority: 1200
