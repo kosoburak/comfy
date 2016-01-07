@@ -16,5 +16,5 @@ production:
   identifier: METACLOUD-$n-$v # vm identifier, used in multiple places
   logging:
     level: ERROR
-    file: /var/log/comfy/comfy.log # File to write log to, used when type file selected
+    file: /var/log/comfy/comfy.log # File to write log to
   debug: false
