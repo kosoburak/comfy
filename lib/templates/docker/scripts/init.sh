@@ -5,7 +5,12 @@ apt-get update
 apt-get --assume-yes install qemu-guest-agent
 apt-key add /root/RPM-GPG-KEY-CERIT-SC.cfg
 rm -f /root/RPM-GPG-KEY-CERIT-SC.cfg
+apt-key add /root/DEPOT-GPG-KEY.cfg
+rm -f /root/DEPOT-GPG-KEY.cfg
 mv /root/meta-misc.list /etc/apt/sources.list.d/meta-misc.list
+mv /root/depot.list /etc/apt/sources.list.d/depot.list
+mv /root/depot_all.pref /etc/apt/preferences.d/depot_all.pref
+mv /root/depot_check_mk.pref /etc/apt/preferences.d/depot_check_mk.pref
 
 # Docker repositories
 apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
@@ -40,9 +45,6 @@ mv /root/jail.local /etc/fail2ban/jail.local
 mv /root/fail2ban.local /etc/fail2ban/fail2ban.local
 
 # check-mk-agent
-# mkdir /etc/check_mk
-# touch /etc/check_mk/fileinfo.cfg
-
 apt-get --assume-yes install check-mk-agent check-mk-agent-meta-key
 apt-get --assume-yes install check-mk-agent-meta-checks
 
