@@ -2,6 +2,8 @@
 
 # add EPEL repository
 yum -y install http://ftp.astral.ro/mirrors/fedora/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+# add SL7-rolling repository for python-jsonpointer
+mv /root/sl7-rolling.repo /etc/yum.repos.d/sl7-rolling.repo
 # update already installed packages
 yum -y update
 # install new packages
