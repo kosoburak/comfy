@@ -2,11 +2,12 @@
 production:
   output-dir: /opt/comfy/virtualmachines/ # Directory to which COMFY will produce virtual machine files
   cache-dir: /opt/comfy/packer_cache/ # Directory for packer's cache e.g. distribution installation images
-  #template-dir: /opt/comfy/templates/ # When used COMFY uses templates from this directory to create virtual machines
+  #template-dir: /opt/comfy/templates/ # When used, COMFY uses templates from this directory to create virtual machines
   formats:
     - qemu
   size: 10000
   description: true
+  #packer-binary: # When used, COMFY will use this binary to run Packer instead of the one found by the system in PATH 
   groups: # groups VM belongs to, used when creating cloud-appliance-descriptor
     - comfy
 # $t - timestamp
