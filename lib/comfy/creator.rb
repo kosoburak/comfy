@@ -26,7 +26,7 @@ class Comfy::Creator
     @data = options.clone
   end
 
-  # Method representing thw whole creation process. Prepares enviroment,
+  # Method representing the whole creation process. Prepares enviroment,
   # prepare files and starts packer job.
   def create
     logger.info('Preparing for image creation...')
@@ -70,12 +70,15 @@ class Comfy::Creator
   # @param packer_file descriptor file with info for packer processing.
   def run_packer(packer_file)
     logger.info("Calling Packer - building distribution: '#{data[:distribution]}'.")
-    packer = Mixlib::ShellOut.new("packer validate #{packer_file}")
+
+    packer_binary = data[:'packer-binary'] || 'packer'
+
+    packer = Mixlib::ShellOut.new("#{packer_binary} validate #{packer_file}")
     packer.run_command
 
     fail Comfy::Errors::PackerValidationError, "Packer validation failed for distribution '#{data[:distribution]}': #{packer.stdout}" if packer.error?
 
-    packer = Mixlib::ShellOut.new("packer build -parallel=false #{packer_file}", timeout: 5400)
+    packer = Mixlib::ShellOut.new("#{packer_binary} build -parallel=false #{packer_file}", timeout: 5400)
     packer.live_stream = logger
     packer.run_command
 

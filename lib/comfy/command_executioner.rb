@@ -5,7 +5,7 @@ require 'fileutils'
 
 class Comfy::CommandExecutioner < Thor
   class << self
-    
+
     # Method listing available distributions from template directory.
     #
     # @return [Hash] distributions structure containing info about them
@@ -148,6 +148,11 @@ class Comfy::CommandExecutioner < Thor
                   aliases: '-t',
                   default: Comfy::TEMPLATE_DIR,
                   desc: 'Directory COMFY uses templates from to build a VM'
+    method_option :'packer-binary',
+                  type: :string,
+                  aliases: '-p',
+                  default: Comfy::Settings['packer-binary'],
+                  desc: 'Path to Packer binary'
 
     class_eval %Q^
 desc '#{plain_name}', 'Builds VM with distribution #{name}'
