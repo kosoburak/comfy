@@ -1,6 +1,6 @@
-require 'comfy/settings'
-
 module Comfy
+  require 'comfy/settings'
+
   GEM_DIR = File.realdirpath(File.join(File.dirname(__FILE__), '..'))
   DESCRIPTION_SCHEMA_FILE = File.join(GEM_DIR, 'schema', 'distribution_descriptor.schema')
   TEMPLATE_DIR = Comfy::Settings['template-dir'] || File.join(GEM_DIR, 'lib', 'templates')
