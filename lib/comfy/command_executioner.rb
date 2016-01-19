@@ -32,7 +32,7 @@ class Comfy::CommandExecutioner < Thor
           version_string << version['patch_version']
 
           distributions[name] << version_string.compact.join('.')
-          distributions[name].sort!
+          distributions[name].sort!.reverse!
         end
       end
 
