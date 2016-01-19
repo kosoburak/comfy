@@ -95,7 +95,7 @@ Builds VM with distribution Ubuntu
 ```
 
 COMFY currently supports building of these distributions:
-* CentOS 7.1.1503
+* CentOS 7.2.1511
 * Debian 7.9.0
 * Debian 8.2.0
 * ScientificLinux 7.1
