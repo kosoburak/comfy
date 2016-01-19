@@ -76,10 +76,10 @@ class Comfy::CommandExecutioner < Thor
     dir = options['destination']
     FileUtils.mkdir_p dir unless File.exist?(dir) && File.directory?(dir)
 
-    FileUtils.cp_r(File.join(Comfy::Settings['template-dir'], '.'), dir)
+    FileUtils.cp_r(File.join(Comfy::TEMPLATE_DIR, '.'), dir)
     $stdout.puts 'Template files copied successfully.'
     $stdout.puts "In order to use the new template directory change setting 'vm_templates_dir' in your configuration file to:"
-    $stdout.puts "template-dir: #{dir}"
+    $stdout.puts "template-dir: #{File.absolute_path(dir)}"
   end
 
   method_option :"cache-dir",
