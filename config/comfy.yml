@@ -1,20 +1,20 @@
 ---
 production:
-  output-dir: /opt/comfy/virtualmachines/ # Directory to which COMFY will produce virtual machine files
-  cache-dir: /opt/comfy/packer_cache/ # Directory for packer's cache e.g. distribution installation images
-  #template-dir: /opt/comfy/templates/ # When used, COMFY uses templates from this directory to create virtual machines
+  output-dir: /var/spool/comfy/appliances/ # Directory to which COMFY will produce virtual machine files
+  cache-dir: /var/spool/comfy/cache/ # Directory for packer's cache e.g. distribution installation images
+  #template-dir: /etc/comfy/templates/ # When used, COMFY uses templates from this directory to create virtual machines
   formats:
     - qemu
   size: 10000
   description: true
-  #packer-binary: # When used, COMFY will use this binary to run Packer instead of the one found by the system in PATH 
+  #packer-binary: # When used, COMFY will use this binary to run Packer instead of the one found by the system in PATH
   groups: # groups VM belongs to, used when creating cloud-appliance-descriptor
     - comfy
 # $t - timestamp
 # $v - distribution version, consisting of major, minor, and patch version if possible
 # $n - distribution name
 # $g - groups the VM belongs to, separated by commas
-  identifier: METACLOUD-$n-$v # vm identifier, used in multiple places
+  identifier: COMFY-$n-$v # vm identifier, used in multiple places
   logging:
     level: ERROR
     file: /var/log/comfy/comfy.log # File to write log to
