@@ -4,8 +4,14 @@
 ######################CESNET CLOUD#########################
 ###########################################################
 
-mv /root/cerit-cloudinit.list /etc/apt/sources.list.d/cerit-cloudinit.list
-apt-key add /root/RPM-GPG-KEY-CERIT-SC.cfg
+#DEB8 doesn't need cerit repo
+if [[ $(lsb_release -rs) == 7.* ]]; then
+  mv /root/cerit-cloudinit.list /etc/apt/sources.list.d/cerit-cloudinit.list
+  apt-key add /root/RPM-GPG-KEY-CERIT-SC.cfg
+else
+  rm /root/cerit-cloudinit.list
+fi
+
 rm -f /root/RPM-GPG-KEY-CERIT-SC.cfg
 apt-key add /root/DEPOT-GPG-KEY.cfg
 rm -f /root/DEPOT-GPG-KEY.cfg
