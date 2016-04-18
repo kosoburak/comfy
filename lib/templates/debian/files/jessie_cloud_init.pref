@@ -1,0 +1,9 @@
+# Take (only) cloud-init from jessie
+Package: *
+Pin: release a=jessie
+Pin-Priority: 10
+
+Package: cloud-init
+Pin: release a=jessie
+Pin-Priority: 910
+

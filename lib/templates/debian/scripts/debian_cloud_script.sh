@@ -4,11 +4,20 @@
 ######################CESNET CLOUD#########################
 ###########################################################
 
-#DEB8 doesn't need cerit repo
+# make sure lsb_release is installed
+apt-get update
+apt-get --assume-yes upgrade
+apt-get --assume-yes install lsb-release
+
+#DEB8 doesn't need cerit and jessie repo
 if [[ $(lsb_release -rs) == 7.* ]]; then
   mv /root/cerit-cloudinit.list /etc/apt/sources.list.d/cerit-cloudinit.list
   apt-key add /root/RPM-GPG-KEY-CERIT-SC.cfg
+  mv /root/jessie.list /etc/apt/sources.list.d/jessie.list
+  mv /root/jessie_cloud_init.pref /etc/apt/preferences.d/jessie_cloud_init.pref
 else
+  rm /root/jessie.list
+  rm /root/jessie_cloud_init.pref
   rm /root/cerit-cloudinit.list
 fi
 
@@ -45,12 +54,12 @@ else
   systemctl enable cloud-init
   systemctl enable cloud-config
   systemctl enable cloud-final
-  rm /etc/cloud/cloud.cfg.d/90_dpkg.cfg
   rm /etc/apt/sources.list.d/backports.list
   mv /root/getty\@ttyS0.service /etc/systemd/system/getty.target.wants/getty@ttyS0.service
   ln -s /etc/systemd/system/getty\@ttyS0.service /etc/systemd/system/getty.target.wants/getty@ttyS0.service
 fi
 
+rm /etc/cloud/cloud.cfg.d/90_dpkg.cfg
 mv /root/ntp.conf /etc/ntp.conf
 mv /root/cloud.cfg /etc/cloud/cloud.cfg
 mv /root/krb5.conf /etc/krb5.conf

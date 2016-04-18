@@ -1,0 +1,2 @@
+deb ftp://ftp.debian.org/debian/ jessie main
+deb-src ftp://ftp.debian.org/debian/ jessie main
