@@ -15,10 +15,14 @@ if [[ $(lsb_release -rs) == 7.* ]]; then
   apt-key add /root/RPM-GPG-KEY-CERIT-SC.cfg
   mv /root/jessie.list /etc/apt/sources.list.d/jessie.list
   mv /root/jessie_cloud_init.pref /etc/apt/preferences.d/jessie_cloud_init.pref
+  mv /root/depot_wheezy.list /etc/apt/sources.list.d/depot.list
+  rm /root/depot_jessie.list
 else
   rm /root/jessie.list
   rm /root/jessie_cloud_init.pref
   rm /root/cerit-cloudinit.list
+  mv /root/depot_jessie.list /etc/apt/sources.list.d/depot.list
+  rm /root/depot_wheezy.list
 fi
 
 rm -f /root/RPM-GPG-KEY-CERIT-SC.cfg
@@ -26,7 +30,6 @@ apt-key add /root/DEPOT-GPG-KEY.cfg
 rm -f /root/DEPOT-GPG-KEY.cfg
 mv /root/backports.list /etc/apt/sources.list.d/backports.list
 mv /root/meta-misc.list /etc/apt/sources.list.d/meta-misc.list
-mv /root/depot.list /etc/apt/sources.list.d/depot.list
 mv /root/depot_all.pref /etc/apt/preferences.d/depot_all.pref
 mv /root/depot_check_mk.pref /etc/apt/preferences.d/depot_check_mk.pref
 
