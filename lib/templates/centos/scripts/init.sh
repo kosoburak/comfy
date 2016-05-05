@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # add EPEL repository
-yum -y install http://ftp.astral.ro/mirrors/fedora/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+yum -y install http://ftp.astral.ro/mirrors/fedora/pub/epel/7/x86_64/e/epel-release-7-6.noarch.rpm
 # update already installed packages
 yum -y update
 # install new packages

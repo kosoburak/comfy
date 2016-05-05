@@ -2,7 +2,7 @@
   "name": "ScientificLinux",
   "versions": [{
       "major_version": "7",
-      "minor_version": "1",
+      "minor_version": "2",
       "iso_url": "http://mirror.karneval.cz/pub/linux/scientific/7/x86_64/iso/SL-7.2-x86_64-netinst.iso",
       "iso_checksum": "d5ee154d7f6107795219eb09c600ad688472033be05b50a288c189fcb10aac5d"
     }],
