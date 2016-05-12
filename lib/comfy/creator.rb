@@ -73,12 +73,12 @@ class Comfy::Creator
 
     packer_binary = data[:'packer-binary'] || 'packer'
 
-    packer = Mixlib::ShellOut.new("#{packer_binary} validate #{packer_file}")
+    packer = Mixlib::ShellOut.new(packer_binary, "validate", packer_file)
     packer.run_command
 
     fail Comfy::Errors::PackerValidationError, "Packer validation failed for distribution '#{data[:distribution]}': #{packer.stdout}" if packer.error?
 
-    packer = Mixlib::ShellOut.new("#{packer_binary} build -parallel=false #{packer_file}", timeout: 5400)
+    packer = Mixlib::ShellOut.new(packer_binary, "build", "-parallel=false", packer_file, timeout: 5400)
     packer.live_stream = logger
     packer.run_command
 

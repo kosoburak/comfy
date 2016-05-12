@@ -2,18 +2,18 @@
   "name": "Debian",
   "versions": [{
       "major_version": "7",
-      "minor_version": "9",
+      "minor_version": "10",
       "patch_version": "0",
       "codename": "wheezy",
-      "iso_url": "http://cdimage.debian.org/cdimage/archive/7.9.0/amd64/iso-cd/debian-7.9.0-amd64-netinst.iso",
-      "iso_checksum": "b6a19b4cf1d046e5eba1ae235a94824bca5a7c8f092a28216396c9d585ef709d"
+      "iso_url": "http://cdimage.debian.org/cdimage/archive/7.10.0/amd64/iso-cd/debian-7.10.0-amd64-netinst.iso",
+      "iso_checksum": "1ade0f396aee06e51e6333f2a947c7ab234f63c61e4a8495f9a20a16cff755b2"
     },{
       "major_version": "8",
-      "minor_version": "2",
+      "minor_version": "4",
       "patch_version": "0",
       "codename": "jessie",
-      "iso_url": "http://cdimage.debian.org/debian-cd/8.2.0/amd64/iso-cd/debian-8.2.0-amd64-netinst.iso",
-      "iso_checksum": "d393d17ac6b3113c81186e545c416a00f28ed6e05774284bb5e8f0df39fcbcb9"
+      "iso_url": "http://cdimage.debian.org/debian-cd/8.4.0/amd64/iso-cd/debian-8.4.0-amd64-netinst.iso",
+      "iso_checksum": "7a6b418e6a4ee3ca75dda04d79ed96c9e2c33bb0c703ca7e40c6374ab4590748"
     }],
   "boot_command": "install auto=true priority=critical preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}",
   "qemu": {

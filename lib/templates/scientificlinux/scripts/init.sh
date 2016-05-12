@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # add EPEL repository
-yum -y install http://ftp.astral.ro/mirrors/fedora/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+yum -y install http://ftp.astral.ro/mirrors/fedora/pub/epel/7/x86_64/e/epel-release-7-6.noarch.rpm
 # add SL7-rolling repository for python-jsonpointer
 mv /root/sl7-rolling.repo /etc/yum.repos.d/sl7-rolling.repo
 # update already installed packages
@@ -75,9 +75,6 @@ chkconfig network on
 # disable NetworkManager
 systemctl disable NetworkManager
 
-#remove chrony to enable NTP service
-rpm -e chrony
-
 # allow to use sudo via ssh
 chmod u+w /etc/sudoers
 sed -i s/'Defaults    requiretty'/'#Defaults    requiretty'/g /etc/sudoers
@@ -91,4 +88,3 @@ passwd -d root
 
 rm -f ~/.bash_history
 rm -f /var/log/cloud-init*
-

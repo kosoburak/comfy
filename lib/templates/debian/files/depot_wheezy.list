@@ -1,0 +1,4 @@
+# depot_all
+deb  ftp://depot1.mc.cesnet.cz/ all main
+# depot_squeeze
+deb  ftp://depot1.mc.cesnet.cz/ wheezy main
