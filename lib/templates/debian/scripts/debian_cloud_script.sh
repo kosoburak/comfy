@@ -45,7 +45,7 @@ apt-get --assume-yes install qemu-guest-agent
 apt-get --assume-yes install fail2ban ntp
 DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" heimdal-clients libpam-heimdal
 apt-get --assume-yes install vim git
-
+apt-get --assume-yes install cloud-initramfs-growroot
 
 # Enable services
 if [[ $(lsb_release -rs) == 7.* ]]; then

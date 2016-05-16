@@ -32,6 +32,9 @@ ln -s /etc/systemd/system/getty\@ttyS0.service /etc/systemd/system/getty.target.
 mv /root/ntp.conf /etc/ntp.conf
 mv /root/xen-domU.conf /etc/dracut.conf.d/xen-domU.conf
 
+# growroot
+yum -y install cloud-utils
+
 # fail2ban
 mv /root/iptables-multiport.local /etc/fail2ban/action.d/iptables-multiport.local
 mv /root/jail.local /etc/fail2ban/jail.local
